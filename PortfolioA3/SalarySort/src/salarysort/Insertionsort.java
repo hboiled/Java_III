@@ -7,6 +7,7 @@ package salarysort;
 
 import java.time.Duration;
 import java.time.Instant;
+import salarysort.Employee.Employee;
 
 /**
  *
@@ -14,7 +15,7 @@ import java.time.Instant;
  */
 public class Insertionsort {
     
-    public static void insertionSortTime(int[] arr) {
+    public static void insertionSortTime(Employee[] arr) {
         Instant start = Instant.now();
         insertionSort(arr);
         Instant finish = Instant.now();       
@@ -25,11 +26,11 @@ public class Insertionsort {
         System.out.println(timeSecElapsed + " : seconds.");
     }
 
-    public static void insertionSort(int[] array) {
+    public static void insertionSort(Employee[] array) {
         for (int i = 1; i < array.length; i++) {
-            int current = array[i];
+            Employee current = array[i];
             int j = i - 1;
-            while (j >= 0 && current < array[j]) {
+            while (j >= 0 && current.getSalary() < array[j].getSalary()) {
                 array[j + 1] = array[j];
                 j--;
             }

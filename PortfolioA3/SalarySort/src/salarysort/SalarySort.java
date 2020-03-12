@@ -23,35 +23,38 @@ public class SalarySort {
     public static void main(String[] args) {
         Random rando = new Random();                        
         
-//        // create array of 100 thousand ints
+        // create array of 100 thousand ints
         
-//        
-//        int[] nums = new int[100_000];
-//        
-//        for (int i = 0; i < nums.length; i++) {
-//            nums[i] = rando.nextInt(100_000_000);
-//        }
-//        int[] numsInsertion = nums.clone();
-//        int[] numsMerge = nums.clone();
-//
-//        System.out.println("On an array of size 100,000");
-//        builtInSort(nums);
-//        Insertionsort.insertionSortTime(numsInsertion);
-//        Mergesort.mergeSortTime(numsMerge);
-//        
-//        int[] nums10 = new int[1_000_000];
+        
+        Employee[] nums = new Employee[100_00];
+        
+        for (int z = 0; z < 2; z++) {
+            for (int i = 0; i < nums.length; i++) {
+            nums[i] = new Employee(rando.nextInt(100_000_000));
+        }
+        Employee[] numsInsertion = nums.clone();
+        Employee[] numsMerge = nums.clone();
+
+        System.out.println("On an array of size 100,000");
+        builtInSort(nums);
+        Insertionsort.insertionSortTime(numsInsertion);
+        Mergesort.mergeSortTime(numsMerge);
+        }
+        
+        
+//        Employee[] nums10 = new int[1_000_000];
 //        
 //        for (int i = 0; i < nums.length; i++) {
 //            nums10[i] = rando.nextInt(100_000_000);
 //        }
-//        int[] nums10Insertion = nums10.clone();
-//        int[] nums10Merge = nums10.clone();
+//        Employee[] nums10Insertion = nums10.clone();
+//        Employee[] nums10Merge = nums10.clone();
 //        
 //        System.out.println("On an array of size 1,000,000");
 //        builtInSort(nums10);
 //        Insertionsort.insertionSortTime(nums10Insertion);
 //        Mergesort.mergeSortTime(nums10Merge);
-        
+//        
 //        int[] nums100 = new int[10_000_000];
 //        
 //        for (int i = 0; i < nums.length; i++) {
@@ -64,7 +67,7 @@ public class SalarySort {
 //        mergeSortTime(nums100);
     }        
     
-    public static void builtInSort(int[] arr) {
+    public static void builtInSort(Employee[] arr) {
         Instant start = Instant.now();
         Arrays.sort(arr);
         Instant finish = Instant.now();

@@ -11,9 +11,13 @@ package salarysort.Employee;
  */
 public class Employee implements Comparable<Employee>{
     private int salary;
+    private String name;
+    private static int COUNT = 1;
     
     public Employee(int s) {
         salary = s;
+        name = "EmployeeN" + COUNT;
+        COUNT++;
     }
     
     public int getSalary() {
