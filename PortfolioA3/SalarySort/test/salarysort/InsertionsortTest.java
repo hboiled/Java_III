@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Random;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
+import salarysort.Employee.Employee;
 
 public class InsertionsortTest {
 
@@ -22,17 +23,17 @@ public class InsertionsortTest {
      */
     @Test
     public void testInsertionSort() {
-        int[] array = {5456, 1235, 875, 897, 456, 102, 8989};
-        for (int i : array) {
-            System.out.print(i + " ");
+        Employee[] array = new Employee[10];
+        for (int i = 0 ; i < array.length; i++) {
+            array[i] = new Employee(rando.nextInt(100));
         }
         Insertionsort.insertionSort(array);
 
         System.out.println("");
 
-        int[] sorted = array.clone();
+        Employee[] sorted = array.clone();
         Arrays.sort(sorted);
-        for (int i : sorted) {
+        for (Employee i : sorted) {
             System.out.print(i + " ");
         }
 

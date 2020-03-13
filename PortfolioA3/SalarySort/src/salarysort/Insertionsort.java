@@ -27,7 +27,10 @@ public class Insertionsort {
     }
 
     public static void insertionSort(Employee[] array) {
-        for (int i = 1; i < array.length; i++) {
+        if (array.length < 2) {
+            return;
+        }
+        for (int i = 1; i < array.length; i++){ 
             Employee current = array[i];
             int j = i - 1;
             while (j >= 0 && current.getSalary() < array[j].getSalary()) {

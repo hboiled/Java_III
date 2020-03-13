@@ -33,23 +33,32 @@ public class MergesortTest {
         for (int i = 0 ; i < array.length; i++) {
             array[i] = new Employee(rando.nextInt(100));
         }
+        for (Employee e : array) {
+            System.out.print(e + " ");
+        }
+        System.out.println("");
         // clone employee array before sorting, to be used with built in sort
         Employee[] sorted = array.clone();
+        
+        for (Employee e : sorted) {
+            System.out.print(e + " ");
+        }
+        System.out.println("");
         
         // mergesort call on initial employee array
         Mergesort.mergeSort(array, 0, array.length - 1);
         
-//        for (Employee i : array) {
-//            System.out.print(i + " ");
-//        }
+        for (Employee i : array) {
+            System.out.print(i + " ");
+        }
         
-//        System.out.println("");
+        System.out.println("");
         
         // sort the cloned array
         Arrays.sort(sorted);
-//        for (Employee i : sorted) {
-//            System.out.print(i + " ");
-//        }
+        for (Employee e : sorted) {
+            System.out.print(e + " ");
+        }
         
         // arrays must still be equal after sorting to demonstrate the mergesort works correctly
         assertArrayEquals(sorted, array);

@@ -36,47 +36,46 @@ public class Mergesort {
         merge(array, left, mid, right);
     }
     
-    private static void merge(Employee[] array, int left, int mid, int right) {
-    // calculating lengths
-    int lengthLeft = mid - left + 1;
-    int lengthRight = right - mid;
+    private static void merge(Employee[] arr, int left, int mid, int right) {
+    // arr length of left and right sub arrs
+    int leftLen = mid - left + 1;
+    int rightLen = right - mid;
+    // sub arrs to contain halves
+    Employee[] leftArr = new Employee[leftLen];
+    Employee[] rightArr = new Employee[rightLen];
 
-    // creating temporary subarrays
-    int leftArray[] = new int [lengthLeft];
-    int rightArray[] = new int [lengthRight];
+    // populate sub arrs with sorted vals from arr
+    for (int i = 0; i < leftLen; i++)
+        leftArr[i] = arr[left+i];
+    for (int i = 0; i < rightLen; i++)
+        rightArr[i] = arr[mid+i+1];
 
-    // copying our sorted subarrays into temporaries
-    for (int i = 0; i < lengthLeft; i++)
-        leftArray[i] = array[left+i].getSalary();
-    for (int i = 0; i < lengthRight; i++)
-        rightArray[i] = array[mid+i+1].getSalary();
+    // keep track of sub arr indexes
+    int lIndex = 0;
+    int rIndex = 0;
 
-    // iterators containing current index of temp subarrays
-    int leftIndex = 0;
-    int rightIndex = 0;
-
-    // copying from leftArray and rightArray back into array
-    for (int i = left; i < right + 1; i++) {
-        // if there are still uncopied elements in R and L, copy minimum of the two
-        if (leftIndex < lengthLeft && rightIndex < lengthRight) {
-            if (leftArray[leftIndex] < rightArray[rightIndex]) {
-                array[i] = new Employee(leftArray[leftIndex]);
-                leftIndex++;
+    // sub arrs put back into arr
+    for (int i = left; i < right + 1; i++) {        
+        if (lIndex < leftLen && rIndex < rightLen) {
+            // insert into arr the lowest val of leftArr and rightArr
+            if (leftArr[lIndex].getSalary() < rightArr[rIndex].getSalary()) {
+                arr[i] = leftArr[lIndex];
+                lIndex++;
             }
             else {
-                array[i] = new Employee(rightArray[rightIndex]);
-                rightIndex++;
+                arr[i] = rightArr[rIndex];
+                rIndex++;
             }
         }
-        // if all the elements have been copied from rightArray, copy the rest of leftArray
-        else if (leftIndex < lengthLeft) {
-            array[i] = new Employee(leftArray[leftIndex]);
-            leftIndex++;
+        // if leftArr still has vals remaining insert the rest into the arr
+        else if (lIndex < leftLen) {
+            arr[i] = leftArr[lIndex];
+            lIndex++;
         }
-        // if all the elements have been copied from leftArray, copy the rest of rightArray
-        else if (rightIndex < lengthRight) {
-            array[i] = new Employee(rightArray[rightIndex]);
-            rightIndex++;
+        // if rightArr vals remaining insert rest into arr
+        else if (rIndex < rightLen) {
+            arr[i] = rightArr[rIndex];
+            rIndex++;
         }
     }
 }

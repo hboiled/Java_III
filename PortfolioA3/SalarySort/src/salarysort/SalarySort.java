@@ -25,10 +25,10 @@ public class SalarySort {
         
         // create array of 100 thousand ints
         
+        int SIZE = 100_000;
+        Employee[] nums = new Employee[SIZE];
         
-        Employee[] nums = new Employee[100_00];
-        
-        for (int z = 0; z < 2; z++) {
+        for (int z = 0; z < 10; z++) {
             for (int i = 0; i < nums.length; i++) {
             nums[i] = new Employee(rando.nextInt(100_000_000));
         }
@@ -36,35 +36,11 @@ public class SalarySort {
         Employee[] numsMerge = nums.clone();
 
         System.out.println("On an array of size 100,000");
-        builtInSort(nums);
-        Insertionsort.insertionSortTime(numsInsertion);
         Mergesort.mergeSortTime(numsMerge);
+        builtInSort(nums);
+        Insertionsort.insertionSortTime(numsInsertion);        
         }
         
-        
-//        Employee[] nums10 = new int[1_000_000];
-//        
-//        for (int i = 0; i < nums.length; i++) {
-//            nums10[i] = rando.nextInt(100_000_000);
-//        }
-//        Employee[] nums10Insertion = nums10.clone();
-//        Employee[] nums10Merge = nums10.clone();
-//        
-//        System.out.println("On an array of size 1,000,000");
-//        builtInSort(nums10);
-//        Insertionsort.insertionSortTime(nums10Insertion);
-//        Mergesort.mergeSortTime(nums10Merge);
-//        
-//        int[] nums100 = new int[10_000_000];
-//        
-//        for (int i = 0; i < nums.length; i++) {
-//            nums100[i] = rando.nextInt(100_000_000);
-//        }
-//        
-//        System.out.println("On an array of size 10,000,000");
-//        builtInSort(nums100);
-//        insertionSortTime(nums100);
-//        mergeSortTime(nums100);
     }        
     
     public static void builtInSort(Employee[] arr) {
