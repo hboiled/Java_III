@@ -1,29 +1,56 @@
 package ToDo;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.input.*;
-import javafx.scene.text.Text;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Controller {
+
+    // control elements
+
+    @FXML
+    private MenuItem SaveMenu;
+
+    @FXML
+    private MenuItem QuitMenu;
+
+    @FXML
+    private MenuItem InstructionMenu;
 
     @FXML
     private TextField textInput;
 
     @FXML
-    private Text DisplayItem;
+    private ListView<Task> TaskList = new ListView<>();
 
     @FXML
-    private ListView<String> TaskList = new ListView<>();
-
-    @FXML
-    private ListView<String> TodayToDo = new ListView<>();
+    private ListView<Task> TodayToDo = new ListView<>();
 
     @FXML
     private Button AddBtn;
 
+    @FXML
+    private Button LoadBtn;
+
+    @FXML
+    private Button ClearAllBtn;
+
+    @FXML
+    private Button ClearCompBtn;
+
+    // methods
     @FXML
     void AddBtnClick(MouseEvent event) {
         add();
@@ -38,34 +65,91 @@ public class Controller {
     }
 
     @FXML
+    void SaveList(ActionEvent event) throws IOException {
+        try (Writer writer = new FileWriter("tasks.txt", false)) {
+            for (Task task : TaskList.getItems()) {
+                writer.write(task.toString() + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void Load(MouseEvent event) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader("tasks.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                TaskList.getItems().add(new Task(line));
+            }
+        } catch (IOException f) {
+            f.printStackTrace();
+        }
+    }
+
+    @FXML
+    void DisplayInstructions(ActionEvent event) {
+        String url = "instructions.html";
+        File help = new File(url);
+        try {
+            Desktop.getDesktop().browse(help.toURI());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void ClearAll(MouseEvent event) {
+        TodayToDo.getItems().clear();
+        TaskList.getItems().clear();
+        event.consume();
+    }
+
+    @FXML
+    void ClearCompleted(MouseEvent event) {
+        List<Task> toBeRemoved = new ArrayList<>();
+        for (Task t : TodayToDo.getItems()) {
+            if (t.isComplete()) {
+                toBeRemoved.add(t);
+            }
+        }
+        TodayToDo.getItems().removeAll(toBeRemoved);
+    }
+
+    @FXML
+    void CrossOff(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            Task selTask = TodayToDo.getSelectionModel().getSelectedItem();
+            if (selTask.isComplete()) {
+                selTask.incomplete();
+            } else {
+                selTask.markComplete();
+            }
+            init();
+            System.out.println(selTask + " " + selTask.isComplete());
+        }
+    }
+
+    @FXML
     void DragTask(MouseEvent event) {
-        // have to reclick to set drag target
-        String task = TaskList.getSelectionModel().getSelectedItem();
+        Task task = TaskList.getSelectionModel().getSelectedItem();
         if (task == null) {
             event.consume();
             return;
         }
-        System.out.println(task);
-        int index = TaskList.getSelectionModel().getSelectedIndex();
-        // returns only selected
-        System.out.println(TaskList.getChildrenUnmodifiable().size());
-        System.out.println(index);
         Node cell = TaskList.getChildrenUnmodifiable().get(0);
-        DisplayItem.setText(task);
 
         cell.setOnDragDetected(mouseEvent -> {
             Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
 
             ClipboardContent content = new ClipboardContent();
-            content.putString(task);
+            content.putString(task.toString());
             db.setContent(content);
 
-            System.out.println("Dragging " + task);
             mouseEvent.consume();
         });
 
         TodayToDo.setOnDragOver(dragEvent -> {
-            //System.out.println("draggin over " + task);
 
             if (dragEvent.getGestureSource() != TodayToDo
                     && dragEvent.getDragboard().hasString()) {
@@ -77,13 +161,11 @@ public class Controller {
         TodayToDo.setOnDragEntered(dragEvent -> {
             if (dragEvent.getGestureSource() != TodayToDo
                     && dragEvent.getDragboard().hasString()) {
-                //TaskList.getItems().remove(index);
-                System.out.println("left tasklist");
             }
             dragEvent.consume();
         });
 
-        // modify to tasklist change cursor to cell element
+        // remove?
         TodayToDo.setOnDragExited(dragEvent -> {
             System.out.println("drag exited");
 
@@ -91,11 +173,10 @@ public class Controller {
         });
 
         TodayToDo.setOnDragDropped(dragEvent -> {
-            System.out.println("dropped " + task);
             Dragboard db = dragEvent.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                TodayToDo.getItems().add(db.getString());
+                TodayToDo.getItems().add(new Task(db.getString()));
                 success = true;
                 db.clear();
             }
@@ -104,7 +185,6 @@ public class Controller {
         });
 
         cell.setOnDragDone(dragEvent -> {
-            System.out.println("drag done: " + task);
             if (dragEvent.getTransferMode() == TransferMode.MOVE) {
                 TaskList.getItems().remove(task);
             }
@@ -113,33 +193,26 @@ public class Controller {
 
     @FXML
     void DragBack(MouseEvent event) {
-        String task = TodayToDo.getSelectionModel().getSelectedItem();
+        Task task = TodayToDo.getSelectionModel().getSelectedItem();
         if (task == null) {
             event.consume();
             return;
         }
-        System.out.println(task);
-        int index = TodayToDo.getSelectionModel().getSelectedIndex();
-        // returns only selected
-        System.out.println(TodayToDo.getChildrenUnmodifiable().size());
-        System.out.println(index);
+
         Node cell = TodayToDo.getChildrenUnmodifiable().get(0);
-        DisplayItem.setText(task);
 
         cell.setOnDragDetected(mouseEvent -> {
             Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
 
             ClipboardContent content = new ClipboardContent();
-            content.putString(task);
+            content.putString(task.toString());
             db.setContent(content);
 
-            System.out.println("Dragging " + task);
             mouseEvent.consume();
         });
 
 
         TaskList.setOnDragOver(dragEvent -> {
-            //System.out.println("draggin over " + task);
 
             if (dragEvent.getGestureSource() != TaskList
                     && dragEvent.getDragboard().hasString()) {
@@ -151,13 +224,10 @@ public class Controller {
         TaskList.setOnDragEntered(dragEvent -> {
             if (dragEvent.getGestureSource() != TaskList
                     && dragEvent.getDragboard().hasString()) {
-                //TaskList.getItems().remove(index);
-                System.out.println("left tasklist");
             }
             dragEvent.consume();
         });
 
-        // modify to tasklist change cursor to cell element
         TaskList.setOnDragExited(dragEvent -> {
             System.out.println("drag exited");
 
@@ -169,7 +239,7 @@ public class Controller {
             Dragboard db = dragEvent.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                TaskList.getItems().add(db.getString());
+                TaskList.getItems().add(new Task(db.getString()));
                 success = true;
                 db.clear();
             }
@@ -178,7 +248,6 @@ public class Controller {
         });
 
         cell.setOnDragDone(dragEvent -> {
-            System.out.println("drag done: " + task);
             if (dragEvent.getTransferMode() == TransferMode.MOVE) {
                 TodayToDo.getItems().remove(task);
             }
@@ -187,9 +256,41 @@ public class Controller {
 
     private void add() {
         if (!textInput.getText().isBlank()) {
-            TaskList.getItems().add(textInput.getText());
+            Task newTask = new Task(textInput.getText());
+            TaskList.getItems().add(newTask);
         }
         textInput.clear();
+    }
+
+    private void init() {
+        TodayToDo.setCellFactory(cell -> new ListCell<Task>() {
+            static final String ACTIVE = "active";
+            @Override
+            protected void updateItem(Task item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                    getStyleClass().remove(ACTIVE);
+                } else {
+                    if (item.isComplete()) {
+                        setText(item.toString() + " - finished");
+                    } else {
+                        setText(item.toString());
+                    }
+
+                    if (item.isComplete() && !getStyleClass().contains(ACTIVE)) {
+                        getStyleClass().add(ACTIVE);
+                    } else {
+                        getStyleClass().remove(ACTIVE);
+                    }
+                }
+            }
+        });
+    }
+
+    @FXML
+    void QuitApp(ActionEvent event) {
+        System.exit(0);
     }
 
 }

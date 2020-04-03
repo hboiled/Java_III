@@ -1,0 +1,11 @@
+.title {
+    -fx-font-family: "Mongolian Baiti";
+}
+
+.active {
+    -fx-text-fill: #b41011;
+}
+
+.active .text{
+    -fx-strikethrough: true;
+}
