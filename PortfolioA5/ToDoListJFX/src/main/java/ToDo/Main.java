@@ -10,10 +10,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("Todo.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/Todo.fxml"));
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("tdl.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/tdl.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
 

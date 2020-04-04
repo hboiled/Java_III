@@ -9,7 +9,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import java.util.List;
 public class Controller {
 
     // control elements
-
     @FXML
     private MenuItem SaveMenu;
 
@@ -52,11 +50,13 @@ public class Controller {
 
     // methods
     @FXML
+    // add task to tasklist
     void AddBtnClick(MouseEvent event) {
         add();
     }
 
     @FXML
+    // alternative add to tasklist
     void Submit(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             add();
@@ -65,6 +65,7 @@ public class Controller {
     }
 
     @FXML
+    // save tasks in tasklist as strings
     void SaveList(ActionEvent event) throws IOException {
         try (Writer writer = new FileWriter("tasks.txt", false)) {
             for (Task task : TaskList.getItems()) {
@@ -76,6 +77,7 @@ public class Controller {
     }
 
     @FXML
+    // load from .txt file strings and add them to tasklist
     void Load(MouseEvent event) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader("tasks.txt"))) {
             String line;
@@ -88,6 +90,7 @@ public class Controller {
     }
 
     @FXML
+    // enables help menubar to view instructions
     void DisplayInstructions(ActionEvent event) {
         String url = "instructions.html";
         File help = new File(url);
@@ -99,6 +102,7 @@ public class Controller {
     }
 
     @FXML
+    // removes all tasks from both listviews
     void ClearAll(MouseEvent event) {
         TodayToDo.getItems().clear();
         TaskList.getItems().clear();
@@ -106,6 +110,7 @@ public class Controller {
     }
 
     @FXML
+    // checks todaytodo for tasks which have been marked completed
     void ClearCompleted(MouseEvent event) {
         List<Task> toBeRemoved = new ArrayList<>();
         for (Task t : TodayToDo.getItems()) {
@@ -117,26 +122,30 @@ public class Controller {
     }
 
     @FXML
+    // enables pressing enter on todaytodo task to adjust style
+    // by changing the completed status of tasks
     void CrossOff(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
+            initStyleChange();
             Task selTask = TodayToDo.getSelectionModel().getSelectedItem();
             if (selTask.isComplete()) {
                 selTask.incomplete();
             } else {
                 selTask.markComplete();
             }
-            init();
             System.out.println(selTask + " " + selTask.isComplete());
         }
     }
 
     @FXML
+    // enable drag from tasklist to todaytodo
     void DragTask(MouseEvent event) {
         Task task = TaskList.getSelectionModel().getSelectedItem();
         if (task == null) {
             event.consume();
             return;
         }
+        // workaround to obtain the list cell node containing the selected task
         Node cell = TaskList.getChildrenUnmodifiable().get(0);
 
         cell.setOnDragDetected(mouseEvent -> {
@@ -165,13 +174,6 @@ public class Controller {
             dragEvent.consume();
         });
 
-        // remove?
-        TodayToDo.setOnDragExited(dragEvent -> {
-            System.out.println("drag exited");
-
-            dragEvent.consume();
-        });
-
         TodayToDo.setOnDragDropped(dragEvent -> {
             Dragboard db = dragEvent.getDragboard();
             boolean success = false;
@@ -192,13 +194,14 @@ public class Controller {
     }
 
     @FXML
+    // enables drag back from todaytodo to tasklist
     void DragBack(MouseEvent event) {
         Task task = TodayToDo.getSelectionModel().getSelectedItem();
         if (task == null) {
             event.consume();
             return;
         }
-
+        // workaround to obtain the list cell node containing the selected task
         Node cell = TodayToDo.getChildrenUnmodifiable().get(0);
 
         cell.setOnDragDetected(mouseEvent -> {
@@ -228,14 +231,7 @@ public class Controller {
             dragEvent.consume();
         });
 
-        TaskList.setOnDragExited(dragEvent -> {
-            System.out.println("drag exited");
-
-            dragEvent.consume();
-        });
-
         TaskList.setOnDragDropped(dragEvent -> {
-            System.out.println("dropped " + task);
             Dragboard db = dragEvent.getDragboard();
             boolean success = false;
             if (db.hasString()) {
@@ -255,6 +251,7 @@ public class Controller {
     }
 
     private void add() {
+        // create and add task to tasklist
         if (!textInput.getText().isBlank()) {
             Task newTask = new Task(textInput.getText());
             TaskList.getItems().add(newTask);
@@ -262,7 +259,10 @@ public class Controller {
         textInput.clear();
     }
 
-    private void init() {
+    // modifies cells in todaytodo depending on the completed stats of the task contained
+    // attaches the style class "active" to tasks marked completed
+    // removes it from tasks marked incomplete
+    private void initStyleChange() {
         TodayToDo.setCellFactory(cell -> new ListCell<Task>() {
             static final String ACTIVE = "active";
             @Override
@@ -273,6 +273,7 @@ public class Controller {
                     getStyleClass().remove(ACTIVE);
                 } else {
                     if (item.isComplete()) {
+                        // adds additional idenfitication to completed tasks if focused on
                         setText(item.toString() + " - finished");
                     } else {
                         setText(item.toString());
@@ -289,6 +290,7 @@ public class Controller {
     }
 
     @FXML
+    // used in conjunction with quit in menubar
     void QuitApp(ActionEvent event) {
         System.exit(0);
     }
