@@ -14,7 +14,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Controller {
 
     // control elements
@@ -60,7 +59,6 @@ public class Controller {
     void Submit(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             add();
-            event.consume();
         }
     }
 
@@ -148,49 +146,7 @@ public class Controller {
         // workaround to obtain the list cell node containing the selected task
         Node cell = TaskList.getChildrenUnmodifiable().get(0);
 
-        cell.setOnDragDetected(mouseEvent -> {
-            Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
-
-            ClipboardContent content = new ClipboardContent();
-            content.putString(task.toString());
-            db.setContent(content);
-
-            mouseEvent.consume();
-        });
-
-        TodayToDo.setOnDragOver(dragEvent -> {
-
-            if (dragEvent.getGestureSource() != TodayToDo
-                    && dragEvent.getDragboard().hasString()) {
-                dragEvent.acceptTransferModes(TransferMode.MOVE);
-            }
-            dragEvent.consume();
-        });
-
-        TodayToDo.setOnDragEntered(dragEvent -> {
-            if (dragEvent.getGestureSource() != TodayToDo
-                    && dragEvent.getDragboard().hasString()) {
-            }
-            dragEvent.consume();
-        });
-
-        TodayToDo.setOnDragDropped(dragEvent -> {
-            Dragboard db = dragEvent.getDragboard();
-            boolean success = false;
-            if (db.hasString()) {
-                TodayToDo.getItems().add(new Task(db.getString()));
-                success = true;
-                db.clear();
-            }
-            dragEvent.setDropCompleted(success);
-            dragEvent.consume();
-        });
-
-        cell.setOnDragDone(dragEvent -> {
-            if (dragEvent.getTransferMode() == TransferMode.MOVE) {
-                TaskList.getItems().remove(task);
-            }
-        });
+        drag(task, cell, TodayToDo, TaskList);
     }
 
     @FXML
@@ -204,6 +160,13 @@ public class Controller {
         // workaround to obtain the list cell node containing the selected task
         Node cell = TodayToDo.getChildrenUnmodifiable().get(0);
 
+        drag(task, cell, TaskList, TodayToDo);
+    }
+
+    // method to create drag events for both listviews
+    private void drag(Task task, Node cell, ListView<Task> destinationLV, ListView<Task> targetLV) {
+        //Node cell = TodayToDo.getChildrenUnmodifiable().get(0);
+
         cell.setOnDragDetected(mouseEvent -> {
             Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
 
@@ -214,28 +177,27 @@ public class Controller {
             mouseEvent.consume();
         });
 
+        destinationLV.setOnDragOver(dragEvent -> {
 
-        TaskList.setOnDragOver(dragEvent -> {
-
-            if (dragEvent.getGestureSource() != TaskList
+            if (dragEvent.getGestureSource() != destinationLV
                     && dragEvent.getDragboard().hasString()) {
                 dragEvent.acceptTransferModes(TransferMode.MOVE);
             }
             dragEvent.consume();
         });
 
-        TaskList.setOnDragEntered(dragEvent -> {
-            if (dragEvent.getGestureSource() != TaskList
+        destinationLV.setOnDragEntered(dragEvent -> {
+            if (dragEvent.getGestureSource() != destinationLV
                     && dragEvent.getDragboard().hasString()) {
             }
             dragEvent.consume();
         });
 
-        TaskList.setOnDragDropped(dragEvent -> {
+        destinationLV.setOnDragDropped(dragEvent -> {
             Dragboard db = dragEvent.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                TaskList.getItems().add(new Task(db.getString()));
+                destinationLV.getItems().add(new Task(db.getString()));
                 success = true;
                 db.clear();
             }
@@ -245,7 +207,7 @@ public class Controller {
 
         cell.setOnDragDone(dragEvent -> {
             if (dragEvent.getTransferMode() == TransferMode.MOVE) {
-                TodayToDo.getItems().remove(task);
+                targetLV.getItems().remove(task);
             }
         });
     }
@@ -265,6 +227,7 @@ public class Controller {
     private void initStyleChange() {
         TodayToDo.setCellFactory(cell -> new ListCell<Task>() {
             static final String ACTIVE = "active";
+
             @Override
             protected void updateItem(Task item, boolean empty) {
                 super.updateItem(item, empty);
