@@ -5,9 +5,13 @@
  */
 package Login;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -24,50 +28,42 @@ public class SendLoginDetails {
     public static void SendToServer(String[] details) {
 
         try (Socket socket = new Socket(host, portNum);
-                DataInputStream inStream = new DataInputStream(socket.getInputStream());
-                DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());) {
+                BufferedReader inStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                ObjectOutputStream outStream = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));) {
 
             queryLogin(socket, inStream, outStream, details);
 
         } catch (UnknownHostException ue) {
+            ue.printStackTrace();
             System.out.println(ue.getMessage());
             System.exit(1);
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
             System.exit(1);
         }
     }
 
-    private static void queryLogin(Socket socket, DataInputStream inStream, DataOutputStream outStream, String[] details) {
+    private static void queryLogin(Socket socket, BufferedReader inStream, ObjectOutputStream outStream, String[] details) {
 
-        try {
+        String outcome = "";
+
+        try {            
+            outStream.writeObject(details);
+            outStream.flush();
+
+            String reply = inStream.readLine();
+            System.out.println(reply);
+//            int inByte;            
+//            while ((inByte = inStream.read()) != '\n') {
+//                System.out.write(inByte);
+//                outcome += inByte;
+//            }
             
-            String query = details[0];
-            String username = details[1];
-            String password = details[2];
-
-            String lineInput = sc.nextLine();
-
-            if (lineInput.length() > 0) {
-                outStream.writeBytes(lineInput);
-                outStream.write(13); // carriage return
-                outStream.write(10); // line feeding
-                outStream.flush();
-
-                if (lineInput.equalsIgnoreCase("quit")) {
-                    System.exit(0);
-                }
-
-                int inByte;
-                System.out.print("Server>>>");
-                while ((inByte = inStream.read()) != '\n') {
-                    System.out.write(inByte);
-                }
-                System.out.println("");
-            }
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
 
+        System.out.println(outcome);
     }
 }
