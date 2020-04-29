@@ -5,16 +5,16 @@
  */
 package Server;
 
-import java.io.BufferedReader;
+import Server.Security.HashGen;
+import Server.Security.SaltGen;
+import Server.Security.PWManager;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -22,20 +22,26 @@ import java.util.logging.Logger;
  */
 public class LoginServer implements Runnable {
 
+    private static void insertDummyData() {
+        var salt = PWMan.getSalt();
+        var securePW = PWMan.SecurePW("admin", salt);
+        User u1 = new User("admin", salt, securePW, true);
+        users.add(u1);
+    }
+
+    private static final PWManager PWMan = new PWManager(new HashGen(), new SaltGen());
+    private static List<User> users = new ArrayList<>();
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException {
+        insertDummyData();
         // handle one string array sent: request type, username, password
         try (ServerSocket serverSocket = new ServerSocket(1234)) {
             System.out.println("Server listening on port: #" + serverSocket.getLocalPort());
             
             try (Socket clientSocket = serverSocket.accept()) {
-                
-//                String clientHostName = clientSocket.getInetAddress().getHostAddress();
-//                int clientPortNum = clientSocket.getLocalPort();
-//                System.out.println("Connected from " + clientHostName + " on port #" + clientPortNum);
-                
+
                 ObjectInputStream inStream;
                 inStream = new ObjectInputStream(clientSocket.getInputStream());
                 
@@ -44,33 +50,20 @@ public class LoginServer implements Runnable {
                 
                 try {
                     String[] details = (String[]) inStream.readObject();
+                    System.out.println(details[2]);
                     if (processDetails(details)) {
-                        outStream.writeBytes("Working OK");
+                        outStream.writeBytes("Logged in successfully");
+                        outStream.flush();
+                    } else {
+                        outStream.writeBytes("Login attempt failed.");
+                        outStream.flush();
                     }
                 } catch (ClassNotFoundException ex) {
                     outStream.writeBytes("ClassNotFound Exception");
                     outStream.writeByte(13);
                     outStream.writeByte(10);
                     outStream.flush();
-                }
-                
-                
-                
-//                while (true) {
-//                    String inLine = inStream.readLine();
-//                    System.out.println("Receied from client: " + inLine);
-//                    
-//                    if (inLine.equalsIgnoreCase("quit")) {
-//                        System.out.println("Client disconnected");
-//                        break;
-//                    }
-//                    
-//                    String outLine = "You said: " + inLine + ".";
-//                    outStream.writeBytes(outLine);
-//                    outStream.writeByte(13);
-//                    outStream.writeByte(10);
-//                    outStream.flush();
-//                }
+                }                      
                 
                 inStream.close();
                 outStream.close();
@@ -81,12 +74,39 @@ public class LoginServer implements Runnable {
     }
 
     private static boolean processDetails(String[] details) {
-        System.out.println("I have reached process details");
+        //System.out.println("I have reached process details");
         String request = details[0];
-        String username = details[1];
-        String password = details[2];
+        boolean actionSuccessful = false;
         
-        return true;
+        if (request.equals("login")) {
+            return attemptLogin(details);
+        }
+        
+        return false;
+    }
+    
+    private static boolean attemptLogin(String[] details) {
+        
+        User user = searchUser(details[1]);
+        if (user == null) {
+            return false;
+        }
+        
+        String enteredPwSecured = PWMan.SecurePW(details[2], user.getSalt());        
+        String securedPw = user.getSecurePW();
+        System.out.println(enteredPwSecured + "--\n" + securedPw);
+        
+        return securedPw.equals(enteredPwSecured);
+    }
+    
+    private static User searchUser(String name) {
+        for (User u : users) {
+            if (u.getUsername().equals(name)) {
+                return u;
+            }
+        }
+        
+        return null;
     }
 
     @Override
@@ -94,7 +114,7 @@ public class LoginServer implements Runnable {
         try {
             main(new String[0]);
         } catch (InterruptedException ex) {
-            Logger.getLogger(LoginServer.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 

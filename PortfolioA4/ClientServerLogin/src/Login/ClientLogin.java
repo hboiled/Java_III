@@ -16,7 +16,6 @@ import java.util.logging.Logger;
  */
 public class ClientLogin extends javax.swing.JFrame {
 
-    private boolean isServerUp = false;
     
     public ClientLogin() {
         initComponents();
@@ -38,8 +37,7 @@ public class ClientLogin extends javax.swing.JFrame {
         pwLbl = new javax.swing.JLabel();
         titleLbl = new javax.swing.JLabel();
         outcomeLbl = new javax.swing.JLabel();
-        ConnectStatus = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        responseDisplay = new javax.swing.JTextField();
         password = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -62,12 +60,7 @@ public class ClientLogin extends javax.swing.JFrame {
 
         outcomeLbl.setText("Outcome: ");
 
-        ConnectStatus.setForeground(new java.awt.Color(204, 0, 51));
-        ConnectStatus.setText("Connection Status: OFFLINE");
-
-        jTextField1.setEnabled(false);
-
-        password.setText("jPasswordField1");
+        responseDisplay.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -94,13 +87,9 @@ public class ClientLogin extends javax.swing.JFrame {
                                 .addComponent(loginBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(registerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jTextField1)
+                            .addComponent(responseDisplay)
                             .addComponent(password))))
                 .addContainerGap(66, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(ConnectStatus)
-                .addGap(101, 101, 101))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,22 +108,21 @@ public class ClientLogin extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(loginBtn)
                     .addComponent(registerBtn))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(outcomeLbl)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(ConnectStatus)
-                .addGap(13, 13, 13))
+                    .addComponent(responseDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
-        String[] details = {"login", username.getText(), Arrays.toString(password.getPassword())};
+        String[] details = {"login", username.getText(), new String(password.getPassword())};
         startServer();
-        SendLoginDetails.SendToServer(details);
+        String outcome = SendLoginDetails.SendToServer(details);
+        responseDisplay.setText(outcome);
     }//GEN-LAST:event_loginBtnActionPerformed
 
     private void startServer() {
@@ -178,13 +166,12 @@ public class ClientLogin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel ConnectStatus;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton loginBtn;
     private javax.swing.JLabel outcomeLbl;
     private javax.swing.JPasswordField password;
     private javax.swing.JLabel pwLbl;
     private javax.swing.JButton registerBtn;
+    private javax.swing.JTextField responseDisplay;
     private javax.swing.JLabel titleLbl;
     private javax.swing.JLabel userLbl;
     private javax.swing.JTextField username;

@@ -25,26 +25,28 @@ public class SendLoginDetails {
     private static String host = "localhost";
     private static String loginServer = "LoginServer";
 
-    public static void SendToServer(String[] details) {
+    public static String SendToServer(String[] details) {
 
+        String outcomeMsg = "";
+        
         try (Socket socket = new Socket(host, portNum);
                 BufferedReader inStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 ObjectOutputStream outStream = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()));) {
 
-            queryLogin(socket, inStream, outStream, details);
+            outcomeMsg = queryLogin(socket, inStream, outStream, details);
 
         } catch (UnknownHostException ue) {
             ue.printStackTrace();
-            System.out.println(ue.getMessage());
             System.exit(1);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
             System.exit(1);
         }
+        
+        return outcomeMsg;
     }
 
-    private static void queryLogin(Socket socket, BufferedReader inStream, ObjectOutputStream outStream, String[] details) {
+    private static String queryLogin(Socket socket, BufferedReader inStream, ObjectOutputStream outStream, String[] details) {
 
         String outcome = "";
 
@@ -53,17 +55,12 @@ public class SendLoginDetails {
             outStream.flush();
 
             String reply = inStream.readLine();
-            System.out.println(reply);
-//            int inByte;            
-//            while ((inByte = inStream.read()) != '\n') {
-//                System.out.write(inByte);
-//                outcome += inByte;
-//            }
+            outcome = reply;
             
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
 
-        System.out.println(outcome);
+        return outcome;
     }
 }

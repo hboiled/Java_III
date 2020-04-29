@@ -15,24 +15,35 @@ import java.io.Serializable;
 public class User implements Serializable {
     
     private String username;
-    private String salt;
+    private byte[] salt;
     private String securePW;
+    private boolean isAdmin;
     
-    public User(String name, String salt, String securePW) {
+    public User(String name, byte[] salt, String securePW, boolean isAdmin) {
         this.username = name;
         this.salt = salt;
         this.securePW = securePW;
+        this.isAdmin = isAdmin;
     }
     
     public String getUsername() {
         return username;
     }
 
-    public String getSalt() {
+    public byte[] getSalt() {
         return salt;
     }
 
     public String getSecurePW() {
         return securePW;
+    }
+    
+    public boolean isIsAdmin() {
+        return isAdmin;
+    }
+    
+    @Override
+    public String toString() {
+        return username;
     }
 }
