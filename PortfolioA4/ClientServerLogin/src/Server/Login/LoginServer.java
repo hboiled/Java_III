@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Server;
+package Server.Login;
 
 import Server.Security.HashGen;
 import Server.Security.SaltGen;
 import Server.Security.PWManager;
+import Server.User;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,7 +31,7 @@ public class LoginServer implements Runnable {
     }
 
     private static final PWManager PWMan = new PWManager(new HashGen(), new SaltGen());
-    private static List<User> users = new ArrayList<>();
+    private static final List<User> users = new ArrayList<>();
     /**
      * @param args the command line arguments
      */
@@ -75,8 +76,7 @@ public class LoginServer implements Runnable {
 
     private static boolean processDetails(String[] details) {
         //System.out.println("I have reached process details");
-        String request = details[0];
-        boolean actionSuccessful = false;
+        String request = details[0];        
         
         if (request.equals("login")) {
             return attemptLogin(details);
@@ -109,6 +109,7 @@ public class LoginServer implements Runnable {
         return null;
     }
 
+    // enable run on a separate thread
     @Override
     public void run() {
         try {

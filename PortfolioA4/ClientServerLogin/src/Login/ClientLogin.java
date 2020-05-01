@@ -5,7 +5,12 @@
  */
 package Login;
 
-import Server.LoginServer;
+import Login.RegisterService.UserRegisterRequest;
+import Server.Login.LoginServer;
+import Server.Register.RegisterServer;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +21,6 @@ import java.util.logging.Logger;
  */
 public class ClientLogin extends javax.swing.JFrame {
 
-    
     public ClientLogin() {
         initComponents();
     }
@@ -50,6 +54,11 @@ public class ClientLogin extends javax.swing.JFrame {
         });
 
         registerBtn.setText("Register");
+        registerBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registerBtnActionPerformed(evt);
+            }
+        });
 
         userLbl.setText("Username");
 
@@ -119,17 +128,44 @@ public class ClientLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
+        // get rid of login query
         String[] details = {"login", username.getText(), new String(password.getPassword())};
-        startServer();
+        startLoginServer();
         String outcome = SendLoginDetails.SendToServer(details);
         responseDisplay.setText(outcome);
     }//GEN-LAST:event_loginBtnActionPerformed
 
-    private void startServer() {
+    private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
+        String[] details = {username.getText(), new String(password.getPassword())};
+        startRegisterServer();
+        
+        try {
+            if (UserRegisterRequest.registerUser(details)) {
+                responseDisplay.setText("working");
+            } else {
+                responseDisplay.setText("not working");
+            }            
+        } catch (NotBoundException ex) {
+            ex.printStackTrace();
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_registerBtnActionPerformed
+
+    private void startLoginServer() {
         LoginServer loginServer = new LoginServer();
         Thread thread = new Thread(loginServer);
         thread.start();
     }
+    
+    private void startRegisterServer() {
+        RegisterServer registerServer = new RegisterServer();
+        Thread thread = new Thread(registerServer);
+        thread.start();
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -176,4 +212,6 @@ public class ClientLogin extends javax.swing.JFrame {
     private javax.swing.JLabel userLbl;
     private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
+
+    
 }
