@@ -38,7 +38,7 @@ public class User implements Serializable {
         return securePW;
     }
     
-    public boolean isIsAdmin() {
+    public boolean isAdmin() {
         return isAdmin;
     }
     

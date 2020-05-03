@@ -17,24 +17,24 @@ import java.rmi.server.UnicastRemoteObject;
  * @author 61406
  */
 public class RegisterQuery extends UnicastRemoteObject implements RegisterService {
-
-    private UserDatabase userDB;
-    private PWManager PWMan;
     
     public RegisterQuery() throws RemoteException {
         super();
-        userDB = new UserDatabase();
-        PWMan = new PWManager(new HashGen(), new SaltGen());
     }
     
     @Override
     public boolean registerRequest(String[] details) throws RemoteException {
+        UserDatabase userDB = new UserDatabase();
+        System.out.println(details[0]);
+                
         User newUser = GenUser(details);
         System.out.println(newUser.getUsername());
         return userDB.add(newUser);       
     }
     
     private User GenUser(String[] details) {
+        PWManager PWMan = new PWManager(new HashGen(), new SaltGen());
+        
         String name = details[0];
         byte[] salt = PWMan.getSalt();
         String SecuredPW = PWMan.SecurePW(details[1], salt);

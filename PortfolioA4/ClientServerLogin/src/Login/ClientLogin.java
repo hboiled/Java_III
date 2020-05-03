@@ -45,6 +45,7 @@ public class ClientLogin extends javax.swing.JFrame {
         password = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Login");
 
         loginBtn.setText("Login");
         loginBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -128,15 +129,18 @@ public class ClientLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
-        // get rid of login query
-        String[] details = {"login", username.getText(), new String(password.getPassword())};
+                
+        String[] details = {username.getText(), new String(password.getPassword())};
         startLoginServer();
         String outcome = SendLoginDetails.SendToServer(details);
+        
         responseDisplay.setText(outcome);
+        clearTextFields();
     }//GEN-LAST:event_loginBtnActionPerformed
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
-        String[] details = {username.getText(), new String(password.getPassword())};
+                
+        String[] details = {username.getText(), new String(password.getPassword())};        
         startRegisterServer();
         
         try {
@@ -152,8 +156,15 @@ public class ClientLogin extends javax.swing.JFrame {
         } catch (RemoteException ex) {
             ex.printStackTrace();
         }
+        
+        clearTextFields();
     }//GEN-LAST:event_registerBtnActionPerformed
 
+    private void clearTextFields() {
+        username.setText("");
+        password.setText("");
+    }
+    
     private void startLoginServer() {
         LoginServer loginServer = new LoginServer();
         Thread thread = new Thread(loginServer);
@@ -161,6 +172,7 @@ public class ClientLogin extends javax.swing.JFrame {
     }
     
     private void startRegisterServer() {
+        System.out.println("starting rego server");
         RegisterServer registerServer = new RegisterServer();
         Thread thread = new Thread(registerServer);
         thread.start();

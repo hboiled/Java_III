@@ -19,7 +19,7 @@ public class UserRegisterRequest {
     public static boolean registerUser(String[] userDetails) throws NotBoundException, MalformedURLException, RemoteException {
         RegisterService service = (RegisterService) Naming.lookup("rmi://localhost:5099/register");
         
-        //System.out.println("----" + service.Greet("hello") + service.getClass().getName());
+        System.out.println(userDetails[0]);
         return service.registerRequest(userDetails);        
     }
     
