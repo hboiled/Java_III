@@ -5,11 +5,17 @@
  */
 package Server;
 
+import java.util.Base64;
+import javax.swing.JList;
+import javax.swing.ListModel;
+
 /**
  *
  * @author 61406
  */
 public class AdminWindow extends javax.swing.JFrame {
+
+    private static UserDatabase users = new UserDatabase();
 
     /**
      * Creates new form AdminWindow
@@ -27,21 +33,103 @@ public class AdminWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        usernameDisplay = new javax.swing.JTextField();
+        saltDisplay = new javax.swing.JTextField();
+        username = new javax.swing.JLabel();
+        salt = new javax.swing.JLabel();
+        securedPWDisplay = new javax.swing.JTextField();
+        securedPW = new javax.swing.JLabel();
+        adminStatus = new javax.swing.JLabel();
+        adminStatusDisplay = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        userList = new JList(users.getUsers().toArray())
+        ;
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Admin Config");
+
+        username.setText("Username");
+
+        salt.setText("Salt");
+
+        securedPW.setText("Secured PW");
+
+        adminStatus.setText("Admin");
+
+        userList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        userList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                userListValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(userList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(18, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(username)
+                        .addGap(18, 18, 18)
+                        .addComponent(usernameDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(salt)
+                        .addGap(18, 18, 18)
+                        .addComponent(saltDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(adminStatus)
+                        .addGap(18, 18, 18)
+                        .addComponent(adminStatusDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(securedPW)
+                        .addGap(18, 18, 18)
+                        .addComponent(securedPWDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(57, 57, 57)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(usernameDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(username))
+                        .addGap(26, 26, 26)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(saltDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(salt))
+                        .addGap(28, 28, 28)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(securedPWDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(securedPW))
+                        .addGap(29, 29, 29)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(adminStatusDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(adminStatus)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void userListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_userListValueChanged
+        // TODO add your handling code here:
+        int index = userList.getSelectedIndex();
+        User user = users.getUsers().get(index);
+        
+        usernameDisplay.setText(user.getUsername());
+        saltDisplay.setText(Base64.getEncoder().encodeToString(user.getSalt()));
+        securedPWDisplay.setText(user.getSecurePW());
+        adminStatusDisplay.setText(user.isAdmin() ? "true" : "false");
+        
+    }//GEN-LAST:event_userListValueChanged
 
     /**
      * @param args the command line arguments
@@ -79,5 +167,15 @@ public class AdminWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel adminStatus;
+    private javax.swing.JTextField adminStatusDisplay;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel salt;
+    private javax.swing.JTextField saltDisplay;
+    private javax.swing.JLabel securedPW;
+    private javax.swing.JTextField securedPWDisplay;
+    private javax.swing.JList<String> userList;
+    private javax.swing.JLabel username;
+    private javax.swing.JTextField usernameDisplay;
     // End of variables declaration//GEN-END:variables
 }

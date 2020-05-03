@@ -1,3 +1,4 @@
 *.zip
 *.docx
 *.png
+/PortfolioA4/ClientServerLogin/dist/

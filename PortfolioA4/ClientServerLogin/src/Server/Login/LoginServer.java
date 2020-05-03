@@ -3,11 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Server;
+package Server.Login;
 
+import Server.AdminWindow;
 import Server.Security.HashGen;
 import Server.Security.SaltGen;
 import Server.Security.PWManager;
+import Server.User;
+import Server.UserDatabase;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,15 +33,17 @@ public class LoginServer implements Runnable {
     }
 
     private static final PWManager PWMan = new PWManager(new HashGen(), new SaltGen());
-    private static List<User> users = new ArrayList<>();
+    private static UserDatabase users;
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException {
-        insertDummyData();
-        // handle one string array sent: request type, username, password
+        // insertDummyData();
+        users = new UserDatabase();
+        
+        // handle one string array sent: username, password
         try (ServerSocket serverSocket = new ServerSocket(1234)) {
-            System.out.println("Server listening on port: #" + serverSocket.getLocalPort());
+            //System.out.println("Server listening on port: #" + serverSocket.getLocalPort());
             
             try (Socket clientSocket = serverSocket.accept()) {
 
@@ -50,8 +55,8 @@ public class LoginServer implements Runnable {
                 
                 try {
                     String[] details = (String[]) inStream.readObject();
-                    System.out.println(details[2]);
-                    if (processDetails(details)) {
+                    System.out.println(details[1]);
+                    if (attemptLogin(details)) {
                         outStream.writeBytes("Logged in successfully");
                         outStream.flush();
                     } else {
@@ -73,34 +78,42 @@ public class LoginServer implements Runnable {
         }
     }
 
-    private static boolean processDetails(String[] details) {
-        //System.out.println("I have reached process details");
-        String request = details[0];
-        boolean actionSuccessful = false;
-        
-        if (request.equals("login")) {
-            return attemptLogin(details);
-        }
-        
-        return false;
-    }
+//    private static boolean processDetails(String[] details) {
+//        //System.out.println("I have reached process details");
+//        String request = details[0];        
+//        
+//        if (request.equals("login")) {
+//            return attemptLogin(details);
+//        }
+//        
+//        return false;
+//    }
     
     private static boolean attemptLogin(String[] details) {
         
-        User user = searchUser(details[1]);
+        User user = searchUser(details[0]);
         if (user == null) {
+            System.out.println("user is null");
             return false;
         }
         
-        String enteredPwSecured = PWMan.SecurePW(details[2], user.getSalt());        
-        String securedPw = user.getSecurePW();
-        System.out.println(enteredPwSecured + "--\n" + securedPw);
         
-        return securedPw.equals(enteredPwSecured);
+        
+        String enteredPwSecured = PWMan.SecurePW(details[1], user.getSalt());        
+        String securedPw = user.getSecurePW();
+        System.out.println(enteredPwSecured + "\n" + securedPw);
+        boolean outcome = securedPw.equals(enteredPwSecured);
+        
+        if (outcome) {
+            AdminWindow.main(new String[0]);
+        }
+        
+        return outcome;
     }
     
+    // recheck
     private static User searchUser(String name) {
-        for (User u : users) {
+        for (User u : users.getUsers()) {
             if (u.getUsername().equals(name)) {
                 return u;
             }
@@ -109,6 +122,7 @@ public class LoginServer implements Runnable {
         return null;
     }
 
+    // enable run on a separate thread
     @Override
     public void run() {
         try {

@@ -3,15 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/61406/Documents/NetBeansProjects/ClientServerLogin/src/Server/User.java</file>
-            <file>file:/C:/Users/61406/Documents/NetBeansProjects/ClientServerLogin/src/Server/AdminWindow.java</file>
-            <file>file:/C:/Users/61406/Documents/NetBeansProjects/ClientServerLogin/src/Server/Test.java</file>
-            <file>file:/C:/Users/61406/Documents/NetBeansProjects/ClientServerLogin/src/Login/ClientLogin.java</file>
-            <file>file:/C:/Users/61406/Documents/NetBeansProjects/ClientServerLogin/src/Server/Security/PWManager.java</file>
-            <file>file:/C:/Users/61406/Documents/NetBeansProjects/ClientServerLogin/src/Server/Security/HashGen.java</file>
-            <file>file:/C:/Users/61406/Documents/NetBeansProjects/ClientServerLogin/src/Login/SendLoginDetails.java</file>
-            <file>file:/C:/Users/61406/Documents/NetBeansProjects/ClientServerLogin/src/Server/Security/SaltGen.java</file>
-            <file>file:/C:/Users/61406/Documents/NetBeansProjects/ClientServerLogin/src/Server/LoginServer.java</file>
+            <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Login/SendLoginDetails.java</file>
+            <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Login/ClientLogin.java</file>
+            <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Server/Security/PWManager.java</file>
+            <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Server/LoginServer.java</file>
+            <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Server/User.java</file>
         </group>
     </open-files>
 </project-private>
