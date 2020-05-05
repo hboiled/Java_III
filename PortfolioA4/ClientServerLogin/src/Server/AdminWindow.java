@@ -7,7 +7,6 @@ package Server;
 
 import java.util.Base64;
 import javax.swing.JList;
-import javax.swing.ListModel;
 
 /**
  *
@@ -15,13 +14,14 @@ import javax.swing.ListModel;
  */
 public class AdminWindow extends javax.swing.JFrame {
 
-    private static UserDatabase users = new UserDatabase();
+    private static UserDatabase users;
 
     /**
      * Creates new form AdminWindow
      */
     public AdminWindow() {
-        initComponents();
+        users = new UserDatabase();
+        initComponents();        
     }
 
     /**
@@ -44,17 +44,26 @@ public class AdminWindow extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         userList = new JList(users.getUsers().toArray())
         ;
+        logout = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Admin Config");
+
+        usernameDisplay.setEnabled(false);
+
+        saltDisplay.setEnabled(false);
 
         username.setText("Username");
 
         salt.setText("Salt");
 
+        securedPWDisplay.setEnabled(false);
+
         securedPW.setText("Secured PW");
 
         adminStatus.setText("Admin");
+
+        adminStatusDisplay.setEnabled(false);
 
         userList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         userList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -64,29 +73,37 @@ public class AdminWindow extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(userList);
 
+        logout.setText("Log out");
+        logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(18, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(username)
                         .addGap(18, 18, 18)
                         .addComponent(usernameDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(salt)
                         .addGap(18, 18, 18)
                         .addComponent(saltDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(adminStatus)
-                        .addGap(18, 18, 18)
-                        .addComponent(adminStatusDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(securedPW)
                         .addGap(18, 18, 18)
-                        .addComponent(securedPWDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(securedPWDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(logout, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(adminStatus)
+                        .addGap(18, 18, 18)
+                        .addComponent(adminStatusDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(57, 57, 57)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -95,7 +112,7 @@ public class AdminWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(usernameDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -111,7 +128,9 @@ public class AdminWindow extends javax.swing.JFrame {
                         .addGap(29, 29, 29)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(adminStatusDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(adminStatus)))
+                            .addComponent(adminStatus))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(logout))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
@@ -130,6 +149,12 @@ public class AdminWindow extends javax.swing.JFrame {
         adminStatusDisplay.setText(user.isAdmin() ? "true" : "false");
         
     }//GEN-LAST:event_userListValueChanged
+
+    private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+        this.dispose();        
+    }//GEN-LAST:event_logoutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -170,6 +195,7 @@ public class AdminWindow extends javax.swing.JFrame {
     private javax.swing.JLabel adminStatus;
     private javax.swing.JTextField adminStatusDisplay;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton logout;
     private javax.swing.JLabel salt;
     private javax.swing.JTextField saltDisplay;
     private javax.swing.JLabel securedPW;

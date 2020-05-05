@@ -42,6 +42,10 @@ public class User implements Serializable {
         return isAdmin;
     }
     
+    public void makeAdmin() {
+        isAdmin = true;
+    }
+    
     @Override
     public String toString() {
         return username;

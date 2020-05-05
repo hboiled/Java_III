@@ -25,10 +25,9 @@ public class RegisterQuery extends UnicastRemoteObject implements RegisterServic
     @Override
     public boolean registerRequest(String[] details) throws RemoteException {
         UserDatabase userDB = new UserDatabase();
-        System.out.println(details[0]);
+        //System.out.println(details[0]);
                 
         User newUser = GenUser(details);
-        System.out.println(newUser.getUsername());
         return userDB.add(newUser);       
     }
     
