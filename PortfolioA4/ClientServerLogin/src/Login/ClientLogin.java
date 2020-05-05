@@ -130,9 +130,13 @@ public class ClientLogin extends javax.swing.JFrame {
         String[] details = {username.getText(), new String(password.getPassword())};
         startLoginServer();
         String outcome = SendLoginDetails.SendToServer(details);
-        
-        responseDisplay.setText(outcome);
+                        
+        responseDisplay.setText(outcome);        
         clearTextFields();
+        if (outcome.equals("Admin logged in")) {
+            disableLogin();
+        }
+        
     }//GEN-LAST:event_loginBtnActionPerformed
 
     private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
@@ -172,6 +176,11 @@ public class ClientLogin extends javax.swing.JFrame {
         RegisterServer registerServer = new RegisterServer();
         Thread thread = new Thread(registerServer);
         thread.start();
+    }
+    
+    // disable login window usage when admin window loaded
+    private void disableLogin() {
+        this.setEnabled(false);
     }
 
     /**
@@ -220,6 +229,8 @@ public class ClientLogin extends javax.swing.JFrame {
     private javax.swing.JLabel userLbl;
     private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
+
+    
 
     
 }

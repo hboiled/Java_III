@@ -27,6 +27,7 @@ public class RegisterServer implements Runnable {
         try {
             registry = LocateRegistry.createRegistry(5099);            
         } catch (RemoteException e) {
+            // on subsequent calls to register, retrieve registry instead of creating it
             registry = LocateRegistry.getRegistry(5099);            
         }
         

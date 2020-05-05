@@ -5,6 +5,7 @@
  */
 package Server;
 
+import Login.ClientLogin;
 import java.util.Base64;
 import javax.swing.JList;
 
@@ -46,7 +47,7 @@ public class AdminWindow extends javax.swing.JFrame {
         ;
         logout = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Admin Config");
 
         usernameDisplay.setEnabled(false);
@@ -151,7 +152,8 @@ public class AdminWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_userListValueChanged
 
     private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
-        // TODO add your handling code here:
+        // on logout re-enable login window
+        ClientLogin.getFrames()[0].setEnabled(true);
         this.setVisible(false);
         this.dispose();        
     }//GEN-LAST:event_logoutActionPerformed

@@ -27,41 +27,49 @@ public class LoginServer implements Runnable {
 
     private static final PWManager PWMan = new PWManager(new HashGen(), new SaltGen());
     private static UserDatabase users;
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws InterruptedException {        
+    public static void main(String[] args) throws InterruptedException {
         users = new UserDatabase();
-        
+
         // handle one string array sent: username, password
         try (ServerSocket serverSocket = new ServerSocket(1234)) {
-            //System.out.println("Server listening on port: #" + serverSocket.getLocalPort());
-            
+
             try (Socket clientSocket = serverSocket.accept()) {
 
                 ObjectInputStream inStream;
                 inStream = new ObjectInputStream(clientSocket.getInputStream());
-                
+
                 DataOutputStream outStream;
                 outStream = new DataOutputStream(clientSocket.getOutputStream());
-                
+
                 try {
                     String[] details = (String[]) inStream.readObject();
                     System.out.println(details[1]);
-                    if (attemptLogin(details)) {
-                        outStream.writeBytes("Logged in successfully");
-                        outStream.flush();
-                    } else {
-                        outStream.writeBytes("Login attempt failed.");
-                        outStream.flush();
+                    switch (attemptLogin(details)) {
+                        case "success":
+                            sendMsg("Logged in successfully", outStream);
+                            break;
+                        case "admin":
+                            sendMsg("Admin logged in", outStream);
+                            break;
+                        case "failed":
+                            sendMsg("Login failed", outStream);
+                            break;
+                        case "User does not exist":
+                            sendMsg("User does not exist", outStream);
+                            break;
+                        default:
+                            sendMsg("Error! No message found", outStream);
+                            break;
                     }
                 } catch (ClassNotFoundException ex) {
-                    outStream.writeBytes("ClassNotFound Exception");
-                    outStream.writeByte(13);
-                    outStream.writeByte(10);
-                    outStream.flush();
-                }                      
-                
+                    ex.printStackTrace();
+                    sendMsg("Classcast Exception encountered", outStream);
+                }
+
                 inStream.close();
                 outStream.close();
             }
@@ -70,34 +78,41 @@ public class LoginServer implements Runnable {
         }
     }
 
-    private static boolean attemptLogin(String[] details) {
-        
+    // use dataoutputstream to send reply back to client
+    private static void sendMsg(String msg, DataOutputStream outStream) throws IOException {
+        outStream.writeBytes(msg);
+        outStream.flush();
+    }
+
+    private static String attemptLogin(String[] details) {
+
         User user = searchUser(details[0]);
         if (user == null) {
-            System.out.println("user is null");
-            return false;
+            return "User does not exist";
         }
-        
-        String enteredPwSecured = PWMan.SecurePW(details[1], user.getSalt());        
+
+        String enteredPwSecured = PWMan.SecurePW(details[1], user.getSalt());
         String securedPw = user.getSecurePW();
+        
         System.out.println(enteredPwSecured + "\n" + securedPw);
-        boolean outcome = securedPw.equals(enteredPwSecured);
         
-        if (outcome && user.isAdmin()) {
+        boolean PWCheckOutcome = securedPw.equals(enteredPwSecured);
+
+        if (PWCheckOutcome && user.isAdmin()) {
             AdminWindow.main(new String[0]);
+            return "admin";
         }
-        
-        return outcome;
+
+        return PWCheckOutcome ? "success" : "failed";
     }
-    
-    // recheck
+
     private static User searchUser(String name) {
         for (User u : users.getUsers()) {
             if (u.getUsername().equals(name)) {
                 return u;
             }
         }
-        
+
         return null;
     }
 
