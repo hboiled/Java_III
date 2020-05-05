@@ -25,20 +25,12 @@ import java.util.List;
  */
 public class LoginServer implements Runnable {
 
-    private static void insertDummyData() {
-        var salt = PWMan.getSalt();
-        var securePW = PWMan.SecurePW("admin", salt);
-        User u1 = new User("admin", salt, securePW, true);
-        users.add(u1);
-    }
-
     private static final PWManager PWMan = new PWManager(new HashGen(), new SaltGen());
     private static UserDatabase users;
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws InterruptedException {
-        // insertDummyData();
+    public static void main(String[] args) throws InterruptedException {        
         users = new UserDatabase();
         
         // handle one string array sent: username, password
@@ -78,17 +70,6 @@ public class LoginServer implements Runnable {
         }
     }
 
-//    private static boolean processDetails(String[] details) {
-//        //System.out.println("I have reached process details");
-//        String request = details[0];        
-//        
-//        if (request.equals("login")) {
-//            return attemptLogin(details);
-//        }
-//        
-//        return false;
-//    }
-    
     private static boolean attemptLogin(String[] details) {
         
         User user = searchUser(details[0]);
@@ -97,14 +78,12 @@ public class LoginServer implements Runnable {
             return false;
         }
         
-        
-        
         String enteredPwSecured = PWMan.SecurePW(details[1], user.getSalt());        
         String securedPw = user.getSecurePW();
         System.out.println(enteredPwSecured + "\n" + securedPw);
         boolean outcome = securedPw.equals(enteredPwSecured);
         
-        if (outcome) {
+        if (outcome && user.isAdmin()) {
             AdminWindow.main(new String[0]);
         }
         

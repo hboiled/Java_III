@@ -6,8 +6,13 @@
             <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Login/SendLoginDetails.java</file>
             <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Login/ClientLogin.java</file>
             <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Server/Security/PWManager.java</file>
-            <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Server/LoginServer.java</file>
             <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Server/User.java</file>
+            <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Server/Register/RegisterServer.java</file>
+            <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Server/UserDatabase.java</file>
+            <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Server/AdminWindow.java</file>
+            <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Login/RegisterService/UserRegisterRequest.java</file>
+            <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Server/Login/LoginServer.java</file>
+            <file>file:/C:/Users/61406/Documents/TAFE/JavaIII/PortfolioA4/ClientServerLogin/src/Server/Register/RegisterQuery.java</file>
         </group>
     </open-files>
 </project-private>

@@ -11,9 +11,6 @@ import Server.Register.RegisterServer;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -145,9 +142,9 @@ public class ClientLogin extends javax.swing.JFrame {
         
         try {
             if (UserRegisterRequest.registerUser(details)) {
-                responseDisplay.setText("working");
+                responseDisplay.setText("Successfully registered");
             } else {
-                responseDisplay.setText("not working");
+                responseDisplay.setText("User was not registered");
             }            
         } catch (NotBoundException ex) {
             ex.printStackTrace();
@@ -171,8 +168,7 @@ public class ClientLogin extends javax.swing.JFrame {
         thread.start();
     }
     
-    private void startRegisterServer() {
-        System.out.println("starting rego server");
+    private void startRegisterServer() {       
         RegisterServer registerServer = new RegisterServer();
         Thread thread = new Thread(registerServer);
         thread.start();

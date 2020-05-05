@@ -5,10 +5,9 @@
  */
 package Server;
 
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -22,60 +21,86 @@ import java.util.logging.Logger;
  * @author 61406
  */
 public class UserDatabase {
+
     private List<User> users;
     private final String file = "users.txt";
-    
+
     public UserDatabase() {
-        // this.users = users;
-        // modify constructor to fetch user list
         users = new ArrayList<>();
-        loadUsers();        
+        loadUsers();
+        setUpAdmin();
     }
-    
+
+    private void setUpAdmin() {
+        for (User u : users) {
+            if (u.getUsername().equals("admin") && !u.isAdmin()) {
+                u.makeAdmin();
+            }
+        }
+    }
+
     public List<User> getUsers() {
         return users;
     }
-    
+
     public boolean add(User user) {
         if (!doesUserExist(user)) {
             users.add(user);
             commitToFile();
             return true;
-        } 
-        
+        }
+
         return false;
     }
-    
+
     private boolean doesUserExist(User user) {
         for (User u : users) {
             if (u.getUsername().equals(user.getUsername())) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
     private void commitToFile() {
         // save user list
-        // append true?
-        System.out.println("trying to save");
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file, false)) ) {
-            oos.writeObject(users);
-        } catch (IOException e) {
-            e.printStackTrace();
+        // overwrite the whole list
+        if (doesFileExist(file)) {
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file, false))) {
+                oos.writeObject(users);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
+    }
+
+    private boolean doesFileExist(String file) {
+        File newFile = new File(file);
+
+        if (newFile.exists()) {
+            return true;
+        } else {
+            try {
+                return newFile.createNewFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return false;
     }
 
     private void loadUsers() {
         // 
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file)) ) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             users = (List<User>) ois.readObject();
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-        
+
     }
 }
