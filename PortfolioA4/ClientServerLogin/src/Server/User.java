@@ -12,6 +12,7 @@ import java.io.Serializable;
  * @author 61406
  */
 
+// avoid modifications for serialisation purposes
 public class User implements Serializable {
     
     private String username;

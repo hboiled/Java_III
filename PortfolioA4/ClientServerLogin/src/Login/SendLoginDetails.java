@@ -5,9 +5,7 @@
  */
 package Login;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,7 +21,6 @@ public class SendLoginDetails {
 
     private static int portNum = 1234;
     private static String host = "localhost";
-    private static String loginServer = "LoginServer";
 
     public static String SendToServer(String[] details) {
 
@@ -48,6 +45,7 @@ public class SendLoginDetails {
 
     private static String queryLogin(Socket socket, BufferedReader inStream, ObjectOutputStream outStream, String[] details) {
 
+        // send request then return reply msg
         String outcome = "";
 
         try {            

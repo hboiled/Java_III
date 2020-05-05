@@ -13,7 +13,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -31,6 +30,7 @@ public class UserDatabase {
         setUpAdmin();
     }
 
+    // admin user pw is "admin"
     private void setUpAdmin() {
         for (User u : users) {
             if (u.getUsername().equals("admin") && !u.isAdmin()) {
@@ -77,6 +77,7 @@ public class UserDatabase {
     }
 
     private boolean doesFileExist(String file) {
+        // create file if doesn't exist
         File newFile = new File(file);
 
         if (newFile.exists()) {
@@ -94,12 +95,14 @@ public class UserDatabase {
 
     private void loadUsers() {
         // 
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            users = (List<User>) ois.readObject();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
+        if (doesFileExist(file)) {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+                users = (List<User>) ois.readObject();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (ClassNotFoundException ex) {
+                ex.printStackTrace();
+            }
         }
 
     }
