@@ -20,14 +20,14 @@ import org.apache.commons.io.FilenameUtils;
  *
  * @author 61406
  */
-public class Main extends javax.swing.JFrame {
+public class Reader extends javax.swing.JFrame {
 
     final static String DEFAULTPATH = System.getProperty("user.dir") + "\\data";
 
     /**
      * Creates new form Main
      */
-    public Main() {
+    public Reader() {
         initComponents();
     }
 
@@ -176,14 +176,14 @@ public class Main extends javax.swing.JFrame {
         clearDataTable();
     }//GEN-LAST:event_newBtnActionPerformed
 
-    private void openFile(File fileName) {
-        clearDataTable();
+    public void openFile(File fileName) {
+        clearDataTable();        
         
         try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
-
-            // use CSVReader to read all values into a list
+            
+            // use Reader to read all values into a list
             List<String[]> data = reader.readAll();
-
+            
             // iterate over all table elements and add the values
             for (String[] row : data) {
                 for (int i = 1; i <= row.length; i++) {
@@ -232,7 +232,7 @@ public class Main extends javax.swing.JFrame {
         }
     }
     
-    private void clearDataTable() {
+    public void clearDataTable() {
         for (int i = 0; i < dataTable.getRowCount(); i++) {
             for (int j = 1; j < dataTable.getColumnCount(); j++) {
                 dataTable.setValueAt(0, i, j);
@@ -240,10 +240,7 @@ public class Main extends javax.swing.JFrame {
         }
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
+    public void start(File file) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -257,14 +254,17 @@ public class Main extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Reader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Reader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Reader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Reader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
@@ -274,7 +274,10 @@ public class Main extends javax.swing.JFrame {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                Reader mainWindow = new Reader();
+                mainWindow.openFile(file);
+                mainWindow.setVisible(true);
+                
             }
         });
     }
