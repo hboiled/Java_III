@@ -30,7 +30,7 @@ public class FileSender {
     private static int portNum = 1235;
     private static String host = "localhost";
 
-    public static void SendToClient(File file) throws IOException {
+    public static boolean SendToClient(File file) throws IOException {
 
         byte[] fileBytes = new byte[(int) file.length()];
 
@@ -48,53 +48,16 @@ public class FileSender {
             // file
             outStream.write(fileBytes, 0, fileBytes.length);
             outStream.flush();
+            
+            // when file is sent, considered success
+            // loading the file is responsibility of the Reader
+            return true;
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return false;
     }
 
-//    public static String SendToClient(File file) {
-//
-//        String outcomeMsg = "";
-//        
-//        try (Socket socket = new Socket(host, portNum);
-//                BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
-//                OutputStream outStream = socket.getOutputStream();) {
-//
-//            outcomeMsg = queryTransfer(socket, inStream, outStream, file);
-//
-//        } catch (UnknownHostException ue) {
-//            ue.printStackTrace();
-//            System.exit(1);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            System.exit(1);
-//        }
-//        
-//        return outcomeMsg;
-//    }
-//
-//    private static String queryTransfer(Socket socket, BufferedInputStream inStream, OutputStream outStream, File file) {
-//
-//        // send request then return reply msg
-//        String outcome = "";
-//
-//        try {      
-//            byte[] fileSize = new byte[(int) file.length()];
-//            inStream.read(fileSize, 0, fileSize.length);
-//            outStream.write(fileSize, 0, fileSize.length);
-//            outStream.flush();
-//            
-//            // 
-////            String reply = inStream.readLine();
-////            outcome = reply;
-//            
-//        } catch (IOException e) {
-//            System.out.println(e.getMessage());
-//        }
-//
-//        return outcome;
-//    }
 }

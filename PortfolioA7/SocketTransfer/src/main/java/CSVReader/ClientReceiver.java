@@ -26,13 +26,8 @@ import java.util.logging.Logger;
  */
 public class ClientReceiver implements Runnable {
 
-    private Reader reader;
     private static int portNum = 1235;
     private static String host = "localhost";
-    
-    public ClientReceiver(Reader reader) {
-        this.reader = reader;
-    }
 
     public File receive() {
         File received = null;
@@ -76,7 +71,7 @@ public class ClientReceiver implements Runnable {
         if (received != null) {
             System.out.println(received.getName());
             
-            reader.start(received);            
+            Reader.start(received);            
             
             
         }
