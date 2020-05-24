@@ -6,20 +6,12 @@
 package SocketTransfer;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -39,13 +31,14 @@ public class FileSender {
                         new BufferedInputStream(new FileInputStream(file)));
                 DataOutputStream outStream = new DataOutputStream(fileSocket.getOutputStream());) {
 
+            // must first write file as bytes into stream so that it can be sent
             inStream.readFully(fileBytes, 0, fileBytes.length);
 
-            // name
+            // name for identification
             outStream.writeUTF(file.getName());
-            // file size
+            // file size so receiver knows how large it is
             outStream.writeLong(fileBytes.length);
-            // file
+            // file as bytes
             outStream.write(fileBytes, 0, fileBytes.length);
             outStream.flush();
             

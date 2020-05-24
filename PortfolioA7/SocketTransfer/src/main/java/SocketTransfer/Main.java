@@ -6,7 +6,6 @@
 package SocketTransfer;
 
 import CSVReader.ClientReceiver;
-import CSVReader.Reader;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.DefaultListModel;
@@ -23,8 +22,8 @@ import org.apache.commons.io.FilenameUtils;
 public class Main extends javax.swing.JFrame {
 
     private final static String DEFAULTPATH = System.getProperty("user.dir") + "\\data";
-    private DefaultListModel<File> fileModel;
-    private CellDisplay renderer;
+    private final DefaultListModel<File> fileModel;
+    private final CellDisplay renderer;
 
     /**
      * Creates new form Main

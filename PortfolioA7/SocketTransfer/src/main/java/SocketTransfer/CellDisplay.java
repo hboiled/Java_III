@@ -16,6 +16,7 @@ import javax.swing.JList;
  */
 public class CellDisplay extends DefaultListCellRenderer {
 
+    // render the Jlist display so that it shows the file name only
     @Override
     public Component getListCellRendererComponent(JList list, Object value,
             int index, boolean isSelected, boolean cellHasFocus) {
