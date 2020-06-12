@@ -11,6 +11,8 @@ package com.hboiled.audioplayer;
  */
 public class Main extends javax.swing.JFrame {
 
+    // If user is not signed in, disable playlist functionality buttons
+    private boolean signedIn;
     /**
      * Creates new form Main
      */
