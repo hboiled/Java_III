@@ -38,7 +38,7 @@ public class AudioPlayer {
             IOException, LineUnavailableException {
 
         filePath = file;
-        
+
         // create AudioInputStream object 
         audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
 
@@ -48,10 +48,9 @@ public class AudioPlayer {
         // open audioInputStream to the clip 
         clip.open(audioInputStream);
 
-        clip.close();
+        // clip.close();
         // clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
-    
 
     // Method to play the audio 
     public void play() {
@@ -108,6 +107,7 @@ public class AudioPlayer {
         currentFrame = 0L;
         clip.stop();
         clip.close();
+        nowPlaying = "Now Playing: ";
     }
 
     // Method to jump over a specific part 

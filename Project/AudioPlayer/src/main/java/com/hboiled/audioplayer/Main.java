@@ -5,14 +5,27 @@
  */
 package com.hboiled.audioplayer;
 
+import com.hboiled.audioplayer.Playlist.Playlist;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JFileChooser;
+import org.apache.commons.io.FilenameUtils;
+
 /**
  *
  * @author 61406
  */
 public class Main extends javax.swing.JFrame {
 
+    private AudioPlayer player;
+    private final static String DEFAULTPATH = System.getProperty("user.dir") + "\\sampleSongs";
     // If user is not signed in, disable playlist functionality buttons
     private boolean signedIn;
+    private Playlist defaultPlaylist;
     /**
      * Creates new form Main
      */
@@ -29,6 +42,7 @@ public class Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        loadFileChooser = new JFileChooser(DEFAULTPATH);
         passwordField = new javax.swing.JPasswordField();
         usernameField = new javax.swing.JTextField();
         signUpLbl = new java.awt.Label();
@@ -105,6 +119,11 @@ public class Main extends javax.swing.JFrame {
         restartBtn6.setText("Search Playlists");
 
         addSongBtn.setText("Add Song");
+        addSongBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addSongBtnActionPerformed(evt);
+            }
+        });
 
         restartBtn7.setText("Search Songs");
 
@@ -249,6 +268,29 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void addSongBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSongBtnActionPerformed
+        int result = loadFileChooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = loadFileChooser.getSelectedFile();
+            try {
+                player = new AudioPlayer(selectedFile.getAbsolutePath());
+                player.play();                
+            } catch (UnsupportedAudioFileException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
+            // work with csv files only
+            if (FilenameUtils.getExtension(selectedFile.getName()).equals("csv")) {
+                //fileModel.addElement(selectedFile);
+            } 
+            
+        }
+    }//GEN-LAST:event_addSongBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -289,6 +331,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton deletePlaylistBtn;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JFileChooser loadFileChooser;
     private javax.swing.JButton newPlaylistBtn;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JButton pauseBtn;
