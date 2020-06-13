@@ -24,7 +24,9 @@ public class AudioPlayer {
 
     // to store current position 
     private Long currentFrame;
+    private Long frameCount;
     private Clip clip;
+    private double duration;
 
     // current status of clip 
     private String status;
@@ -41,7 +43,9 @@ public class AudioPlayer {
 
         // create AudioInputStream object 
         audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
-
+        frameCount = audioInputStream.getFrameLength();
+        duration = ((double) frameCount) / audioInputStream.getFormat().getFrameRate();
+        
         // create clip reference 
         clip = AudioSystem.getClip();
 
@@ -134,4 +138,30 @@ public class AudioPlayer {
         clip.open(audioInputStream);
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
+    
+    
+    public Long getCurrentFrame() {
+        return currentFrame;
+    }
+
+    public Long getFrameCount() {
+        return frameCount;
+    }
+
+    public double getDuration() {
+        return duration;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getNowPlaying() {
+        return nowPlaying;
+    }
+
+    public static String getFilePath() {
+        return filePath;
+    }
+
 }

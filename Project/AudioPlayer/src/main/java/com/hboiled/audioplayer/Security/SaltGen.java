@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Server.Security;
+package com.hboiled.audioplayer.Security;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -35,3 +35,4 @@ public class SaltGen {
         return null;
     }
 }
+
