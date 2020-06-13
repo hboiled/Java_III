@@ -18,4 +18,9 @@ public class Playlist {
         this.name = name;
         playlist = new BTree();
     }
+    
+    @Override
+    public String toString() {
+        return name;
+    }
 }

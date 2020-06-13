@@ -36,9 +36,9 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jScrollPane2" min="-2" pref="95" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -54,11 +54,11 @@
                               <Component id="stopBtn" min="-2" pref="65" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="restartBtn" min="-2" max="-2" attributes="0"/>
+                              <Component id="nextBtn" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="restartBtn1" min="-2" max="-2" attributes="0"/>
+                              <Component id="previousBtn" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="restartBtn2" min="-2" max="-2" attributes="0"/>
+                              <Component id="sortSongsBtn" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="addSongBtn" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -69,7 +69,8 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="restartBtn3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="searchLbl" min="-2" max="-2" attributes="0"/>
+                          <Component id="timeStampLbl" min="-2" max="-2" attributes="0"/>
+                          <Component id="searchLbl" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="searchField" min="-2" pref="70" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -77,17 +78,26 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="restartBtn7" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="timeStampLbl" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="247" max="-2" attributes="0"/>
+                      <Component id="playlistLbl" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="186" max="-2" attributes="0"/>
                       <Component id="title" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="saveBtn" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="songsLbl" min="-2" max="-2" attributes="0"/>
+                          <Component id="jScrollPane1" min="-2" pref="96" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="signInBtn" alignment="1" min="-2" pref="70" max="-2" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
@@ -103,21 +113,6 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="songsLbl" min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" min="-2" pref="96" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-          </Group>
-          <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-                  <Component id="playlistLbl1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="569" max="32767" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -133,6 +128,7 @@
                       <Component id="usernameField" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="title" min="-2" max="-2" attributes="0"/>
+                  <Component id="playlistLbl" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -146,57 +142,58 @@
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
                               <Component id="songsLbl" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jScrollPane1" max="32767" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
                               <Component id="playbackSlider" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="timeStampLbl" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="startBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="pauseBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="resumeBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="stopBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="timeStampLbl" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="startBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="pauseBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="resumeBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="stopBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="nextBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="previousBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="sortSongsBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="addSongBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="newPlaylistBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="deletePlaylistBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="restartBtn3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                                      <Component id="searchLbl" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="searchField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="restartBtn6" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="restartBtn7" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="18" pref="18" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="saveBtn" min="-2" pref="52" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="restartBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="restartBtn1" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="restartBtn2" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="addSongBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="newPlaylistBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="deletePlaylistBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="restartBtn3" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                              <Component id="searchLbl" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="searchField" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="restartBtn6" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="restartBtn7" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
                   <Component id="jScrollPane2" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-          </Group>
-          <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                  <Component id="playlistLbl1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="287" max="32767" attributes="0"/>
-              </Group>
           </Group>
       </Group>
     </DimensionLayout>
@@ -256,6 +253,7 @@
       <SubComponents>
         <Component class="javax.swing.JList" name="songsList">
           <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JList(playlistModel)"/>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
         </Component>
@@ -289,7 +287,7 @@
         <Property name="text" type="java.lang.String" value="Songs:"/>
       </Properties>
     </Component>
-    <Component class="java.awt.Label" name="playlistLbl1">
+    <Component class="java.awt.Label" name="playlistLbl">
       <Properties>
         <Property name="text" type="java.lang.String" value="Playlists:"/>
       </Properties>
@@ -301,17 +299,17 @@
         <Property name="text" type="java.lang.String" value="Resume"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="restartBtn">
+    <Component class="javax.swing.JButton" name="nextBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Next"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="restartBtn1">
+    <Component class="javax.swing.JButton" name="previousBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Previous"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="restartBtn2">
+    <Component class="javax.swing.JButton" name="sortSongsBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Sort Songs"/>
       </Properties>
@@ -319,21 +317,28 @@
     <Component class="javax.swing.JButton" name="restartBtn3">
       <Properties>
         <Property name="text" type="java.lang.String" value="Sort Playlists"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="newPlaylistBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="New Playlist"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newPlaylistBtnActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="deletePlaylistBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Delete Playlist"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="restartBtn6">
       <Properties>
         <Property name="text" type="java.lang.String" value="Search Playlists"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="addSongBtn">
@@ -364,6 +369,11 @@
     <Component class="java.awt.Label" name="timeStampLbl">
       <Properties>
         <Property name="text" type="java.lang.String" value="00:00 / 00:00"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="saveBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Save"/>
       </Properties>
     </Component>
   </SubComponents>

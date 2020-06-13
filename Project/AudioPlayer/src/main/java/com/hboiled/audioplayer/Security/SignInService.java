@@ -44,7 +44,9 @@ public class SignInService {
         String enteredPwSecured = PWMan.SecurePW(password, user.getSalt());
         String securedPw = user.getSecurePW();
 
-        //System.out.println(enteredPwSecured + "\n" + securedPw);
+        System.out.println(enteredPwSecured + "\n" + securedPw);
+        System.out.println("\n"+new String(user.getSalt()));
+        
         boolean PWCheckOutcome = securedPw.equals(enteredPwSecured);
 
         return PWCheckOutcome;
@@ -109,7 +111,7 @@ public class SignInService {
             for (User u : users) {
 
                 String name = u.getUsername();
-                String salt = Base64.getEncoder().encodeToString(u.getSalt());
+                String salt = new String(u.getSalt());
                 String securedPW = u.getSecurePW();
 
                 writer.write(String.format("%s,%s,%s\n", name, salt, securedPW));
