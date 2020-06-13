@@ -8,8 +8,10 @@ package com.hboiled.audioplayer.Security;
 import com.opencsv.CSVReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -20,16 +22,18 @@ public class SignInService {
 
     private final PWManager PWMan = new PWManager(new HashGen(), new SaltGen());
     private List<User> users = new ArrayList<>();
-    
+    private final File usersPath = new File("data/users.csv");
+
     public SignInService() {
-        File file = new File("data/users.csv");
-        insertUsers(file);
-        for (User u : users) {
-            System.out.println(u);
-        }
+
+        insertUsers();        
+//        for (User u : users) {
+//            System.out.println(u);
+//        }
+        
     }
 
-    private boolean attemptLogin(String username, String password) {
+    public boolean attemptLogin(String username, String password) {
 
         User user = searchUser(username);
 
@@ -46,6 +50,24 @@ public class SignInService {
         return PWCheckOutcome;
     }
 
+    public boolean attemptRegister(String username, String password) {
+
+        if (searchUser(username) == null) {
+
+            byte[] salt = PWMan.getSalt();
+            String securedPW = PWMan.SecurePW(password, salt);
+
+            User newUser = new User(username, salt, securedPW);
+            users.add(newUser);
+
+            saveUserList();
+            return true;
+        }
+
+        // username in use already
+        return false;
+    }
+
     private User searchUser(String name) {
         for (User u : users) {
             if (u.getUsername().equals(name)) {
@@ -56,25 +78,48 @@ public class SignInService {
         return null;
     }
 
-    public final void insertUsers(File fileName) {
+    public final void insertUsers() {
 
-        try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
+        if (usersPath.exists()) {
+            try (CSVReader reader = new CSVReader(new FileReader(usersPath))) {
 
-            // use Reader to read all values into a list
-            List<String[]> data = reader.readAll();
+                // use Reader to read all values into a list
+                List<String[]> data = reader.readAll();
 
-            // insert users into list
-            for (String[] row : data) {
-                String name = row[0];
-                byte[] salt = row[1].getBytes();
-                String securedPW = row[2];
-                
-                users.add(new User(name, salt, securedPW));
+                // insert users into list
+                for (String[] row : data) {
+                    String name = row[0];
+                    byte[] salt = row[1].getBytes();
+                    String securedPW = row[2];
+
+                    users.add(new User(name, salt, securedPW));
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private void saveUserList() {
+
+        try (FileWriter writer = new FileWriter(usersPath, false)) {
+
+            for (User u : users) {
+
+                String name = u.getUsername();
+                String salt = Base64.getEncoder().encodeToString(u.getSalt());
+                String securedPW = u.getSecurePW();
+
+                writer.write(String.format("%s,%s,%s\n", name, salt, securedPW));
+
             }
 
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
+
     }
 }

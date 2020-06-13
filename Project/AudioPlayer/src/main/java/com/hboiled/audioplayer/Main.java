@@ -86,9 +86,19 @@ public class Main extends javax.swing.JFrame {
 
         signInBtn.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         signInBtn.setText("Sign In");
+        signInBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                signInBtnActionPerformed(evt);
+            }
+        });
 
         regoBtn.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         regoBtn.setText("Register");
+        regoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                regoBtnActionPerformed(evt);
+            }
+        });
 
         jScrollPane1.setViewportView(playlists);
 
@@ -296,6 +306,38 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_addSongBtnActionPerformed
 
+    private void signInBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInBtnActionPerformed
+        
+        if (!fieldsEmpty()) {
+            boolean outcome = service.attemptLogin(usernameField.getText(), 
+                    new String(passwordField.getPassword()));
+            
+            System.out.println(outcome ? "Signed in" : "Failed");
+        }
+        
+        clearFields();
+    }//GEN-LAST:event_signInBtnActionPerformed
+
+    private void regoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regoBtnActionPerformed
+        
+        if (!fieldsEmpty()) {
+            boolean outcome = service.attemptRegister(usernameField.getText(), 
+                    new String(passwordField.getPassword()));
+            
+            System.out.println(outcome ? "Signed in" : "Failed");
+        }
+        
+        clearFields();
+    }//GEN-LAST:event_regoBtnActionPerformed
+
+    private boolean fieldsEmpty() {
+        return usernameField.getText().isBlank() || passwordField.getPassword().length == 0;
+    }
+    
+    private void clearFields() {
+        usernameField.setText("");
+        passwordField.setText("");
+    }
     /**
      * @param args the command line arguments
      */
