@@ -9,7 +9,7 @@ package com.hboiled.audioplayer.Playlist;
  *
  * @author 61406
  */
-public class Playlist {
+public class Playlist implements Comparable<Playlist>{
     
     private String name;
     private BTree playlist;
@@ -22,5 +22,10 @@ public class Playlist {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int compareTo(Playlist o) {
+        return this.name.compareTo(o.name);
     }
 }
