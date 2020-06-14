@@ -43,6 +43,7 @@ public class Main extends javax.swing.JFrame {
      * Creates new form Main
      */
     public Main() {
+        defaultPlaylist = new Playlist(("default"));
         playlistModel = new DefaultListModel<>();
         songModel = new DefaultListModel<>();
         initComponents();
@@ -81,7 +82,6 @@ public class Main extends javax.swing.JFrame {
         resumeBtn = new javax.swing.JButton();
         nextBtn = new javax.swing.JButton();
         previousBtn = new javax.swing.JButton();
-        sortSongsBtn = new javax.swing.JButton();
         sortPlaylistsBtn = new javax.swing.JButton();
         newPlaylistBtn = new javax.swing.JButton();
         deletePlaylistBtn = new javax.swing.JButton();
@@ -144,8 +144,6 @@ public class Main extends javax.swing.JFrame {
 
         previousBtn.setText("Previous");
 
-        sortSongsBtn.setText("Sort Songs");
-
         sortPlaylistsBtn.setText("Sort Playlists");
         sortPlaylistsBtn.setEnabled(false);
         sortPlaylistsBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -164,6 +162,11 @@ public class Main extends javax.swing.JFrame {
 
         deletePlaylistBtn.setText("Delete Playlist");
         deletePlaylistBtn.setEnabled(false);
+        deletePlaylistBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deletePlaylistBtnActionPerformed(evt);
+            }
+        });
 
         searchPlaylistsBtn.setText("Search Playlists");
         searchPlaylistsBtn.setEnabled(false);
@@ -243,10 +246,7 @@ public class Main extends javax.swing.JFrame {
                                         .addComponent(playlistField, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(sortPlaylistsBtn)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(sortSongsBtn))
+                                            .addComponent(sortPlaylistsBtn)
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(newPlaylistBtn)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -323,9 +323,7 @@ public class Main extends javax.swing.JFrame {
                                     .addComponent(newPlaylistBtn)
                                     .addComponent(deletePlaylistBtn))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(sortPlaylistsBtn)
-                                    .addComponent(sortSongsBtn)))
+                                .addComponent(sortPlaylistsBtn))
                             .addComponent(jScrollPane2))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -358,7 +356,9 @@ public class Main extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = loadFileChooser.getSelectedFile();
             try {
-                songModel.addElement(selectedFile.getAbsolutePath());
+                //songModel.addElement(selectedFile.getAbsolutePath());
+                defaultPlaylist.add(selectedFile.getAbsolutePath());
+                insertValuesIntoSongModel();
                 player = new AudioPlayer(selectedFile.getAbsolutePath());
                 player.play();
                 playbackSlider.setValue(0);
@@ -449,6 +449,26 @@ public class Main extends javax.swing.JFrame {
         
     }//GEN-LAST:event_searchPlaylistsBtnActionPerformed
 
+    private void deletePlaylistBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePlaylistBtnActionPerformed
+        // TODO clear song list 
+        int target = playlists.getSelectedIndex();
+        
+        if (target >= 0) {
+            playlistModel.remove(target);
+        }
+    }//GEN-LAST:event_deletePlaylistBtnActionPerformed
+
+    private void insertValuesIntoSongModel() {
+        songModel.removeAllElements();
+        
+        // replace with current playlist
+        List<String> songs = defaultPlaylist.getPlaylist().addToList();
+        
+        for (String song : songs) {
+            songModel.addElement(song);
+        }
+    }
+    
     private boolean fieldsEmpty() {
         return usernameField.getText().isBlank() || passwordField.getPassword().length == 0;
     }
@@ -457,6 +477,7 @@ public class Main extends javax.swing.JFrame {
         usernameField.setText("");
         passwordField.setText("");
     }
+    
     /**
      * @param args the command line arguments
      */
@@ -522,11 +543,12 @@ public class Main extends javax.swing.JFrame {
     private java.awt.Label songsLbl;
     private javax.swing.JList<String> songsList;
     private javax.swing.JButton sortPlaylistsBtn;
-    private javax.swing.JButton sortSongsBtn;
     private javax.swing.JButton startBtn;
     private javax.swing.JButton stopBtn;
     private java.awt.Label timeStampLbl;
     private java.awt.Label title;
     private javax.swing.JTextField usernameField;
     // End of variables declaration//GEN-END:variables
+
+    
 }

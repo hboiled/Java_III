@@ -5,12 +5,17 @@
  */
 package com.hboiled.audioplayer.Playlist;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author 61406
  */
 public class BTree {
+    
     private Node root;
+    private List<String> helperList = new ArrayList<>();
     
     public Node getRoot() {
         return root;
@@ -20,13 +25,20 @@ public class BTree {
         root = null;
     }
     
-    // print elements in alphabetical order
+    public List<String> addToList() {
+        helperList.clear();
+        inOrderTraversal(root);
+        return helperList;
+    }
+    
+    // add to helper list
     public void inOrderTraversal(Node n) {
         if (n == null) {
             return;
         }
+        
         inOrderTraversal(n.getLeft());
-        System.out.println(n);
+        helperList.add(n.getValue());
         inOrderTraversal(n.getRight());
     }
     

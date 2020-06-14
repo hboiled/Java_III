@@ -42,6 +42,10 @@ public class Node {
         left = right = null;
     }
     
+    public boolean isLeaf() {
+        return left == null && right == null;
+    }
+    
     @Override
     public String toString() {
         String des = value + ": ";

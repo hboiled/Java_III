@@ -89,11 +89,7 @@
                                       <Component id="playlistField" min="-2" pref="70" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Group type="102" attributes="0">
-                                              <Component id="sortPlaylistsBtn" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                              <Component id="sortSongsBtn" min="-2" max="-2" attributes="0"/>
-                                          </Group>
+                                          <Component id="sortPlaylistsBtn" min="-2" max="-2" attributes="0"/>
                                           <Group type="102" attributes="0">
                                               <Component id="newPlaylistBtn" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -195,10 +191,7 @@
                                   <Component id="deletePlaylistBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="sortPlaylistsBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="sortSongsBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="sortPlaylistsBtn" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jScrollPane2" max="32767" attributes="0"/>
                       </Group>
@@ -352,11 +345,6 @@
         <Property name="text" type="java.lang.String" value="Previous"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="sortSongsBtn">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Sort Songs"/>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JButton" name="sortPlaylistsBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Sort Playlists"/>
@@ -380,6 +368,9 @@
         <Property name="text" type="java.lang.String" value="Delete Playlist"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deletePlaylistBtnActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="searchPlaylistsBtn">
       <Properties>
