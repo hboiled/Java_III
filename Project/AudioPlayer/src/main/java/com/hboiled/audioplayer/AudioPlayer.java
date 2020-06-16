@@ -7,12 +7,16 @@ package com.hboiled.audioplayer;
 
 import java.io.File;
 import java.io.IOException;
+import javax.sound.sampled.AudioFormat;
 
 import org.apache.commons.io.FilenameUtils;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -20,148 +24,157 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  *
  * @author 61406
  */
-public class AudioPlayer {
+public class AudioPlayer implements LineListener {
 
-    // to store current position 
-    private Long currentFrame;
-    private Long frameCount;
-    private Clip clip;
-    private double duration;
+    private static final int SECONDS_IN_HOUR = 60 * 60;
+	private static final int SECONDS_IN_MINUTE = 60;
+	
+	/**
+	 * this flag indicates whether the playback completes or not.
+	 */
+	private boolean playCompleted;
 
-    // current status of clip 
-    private String status;
-    private String nowPlaying;
+	/**
+	 * this flag indicates whether the playback is stopped or not.
+	 */
+	private boolean isStopped;
 
-    private AudioInputStream audioInputStream;
-    private static String filePath;
+	private boolean isPaused;
 
-    // constructor to initialize streams and clip 
-    public AudioPlayer(String file) throws UnsupportedAudioFileException,
-            IOException, LineUnavailableException {
+	private Clip audioClip;
 
-        filePath = file;
+	/**
+	 * Load audio file before playing back
+	 * 
+	 * @param audioFilePath
+	 *            Path of the audio file.
+	 * @throws IOException
+	 * @throws UnsupportedAudioFileException
+	 * @throws LineUnavailableException
+	 */
+	public void load(String audioFilePath)
+			throws UnsupportedAudioFileException, IOException,
+			LineUnavailableException {
+		File audioFile = new File(audioFilePath);
 
-        // create AudioInputStream object 
-        audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
-        frameCount = audioInputStream.getFrameLength();
-        duration = ((double) frameCount) / audioInputStream.getFormat().getFrameRate();
-        
-        // create clip reference 
-        clip = AudioSystem.getClip();
+		AudioInputStream audioStream = AudioSystem
+				.getAudioInputStream(audioFile);
 
-        // open audioInputStream to the clip 
-        clip.open(audioInputStream);
+		AudioFormat format = audioStream.getFormat();
 
-        // clip.close();
-        // clip.loop(Clip.LOOP_CONTINUOUSLY);
-    }
+		DataLine.Info info = new DataLine.Info(Clip.class, format);
 
-    // Method to play the audio 
-    public void play() {
-        String songName = FilenameUtils.getBaseName(filePath);
+		audioClip = (Clip) AudioSystem.getLine(info);
 
-        //start the clip 
-        clip.start();
+		audioClip.addLineListener(this);
 
-        status = "play";
-        nowPlaying = "Now Playing: " + songName;
-    }
+		audioClip.open(audioStream);
+	}
+	
+	public long getClipSecondLength() {
+		return audioClip.getMicrosecondLength() / 1_000_000;
+	}
+	
+	public String getClipLengthString() {
+		String length = "";
+		long hour = 0;
+		long minute = 0;
+		long seconds = audioClip.getMicrosecondLength() / 1_000_000;
+		
+		System.out.println(seconds);
+		
+		if (seconds >= SECONDS_IN_HOUR) {
+			hour = seconds / SECONDS_IN_HOUR;
+			length = String.format("%02d:", hour);
+		} else {
+			length += "00:";
+		}
+		
+		minute = seconds - hour * SECONDS_IN_HOUR;
+		if (minute >= SECONDS_IN_MINUTE) {
+			minute = minute / SECONDS_IN_MINUTE;
+			length += String.format("%02d:", minute);
+			
+		} else {
+			minute = 0;
+			length += "00:";
+		}
+		
+		long second = seconds - hour * SECONDS_IN_HOUR - minute * SECONDS_IN_MINUTE;
+		
+		length += String.format("%02d", second);
+		
+		return length;
+	}
 
-    // Method to pause the audio 
-    public void pause() {
-        if (status.equals("paused")) {
-            return;
-        }
+	/**
+	 * Play a given audio file.
+	 * 
+	 * @throws IOException
+	 * @throws UnsupportedAudioFileException
+	 * @throws LineUnavailableException
+	 */
+	void play() throws IOException {
 
-        this.currentFrame = this.clip.getMicrosecondPosition();
-        clip.stop();
-        status = "paused";
-        nowPlaying = "Now Playing: ";
-    }
+		audioClip.start();
 
-    // Method to resume the audio 
-    public void resumeAudio() throws UnsupportedAudioFileException,
-            IOException, LineUnavailableException {
-        if (status.equals("play")) {
-            return;
-        }
+		playCompleted = false;
+		isStopped = false;
 
-        clip.close();
-        resetAudioStream();
-        clip.setMicrosecondPosition(currentFrame);
-        this.play();
-    }
+		while (!playCompleted) {
+			// wait for the playback completes
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+				if (isStopped) {
+					audioClip.stop();
+					break;
+				}
+				if (isPaused) {
+					audioClip.stop();
+				} else {
+					System.out.println("!!!!");
+					audioClip.start();
+				}
+			}
+		}
 
-    // Method to restart the audio 
-    public void restart() throws IOException, LineUnavailableException,
-            UnsupportedAudioFileException {
+		audioClip.close();
 
-        clip.stop();
-        clip.close();
-        resetAudioStream();
-        currentFrame = 0L;
-        clip.setMicrosecondPosition(0);
-        this.play();
-    }
+	}
 
-    // Method to stop the audio 
-    public void stop() throws UnsupportedAudioFileException,
-            IOException, LineUnavailableException {
+	/**
+	 * Stop playing back.
+	 */
+	public void stop() {
+		isStopped = true;
+	}
 
-        currentFrame = 0L;
-        clip.stop();
-        clip.close();
-        nowPlaying = "Now Playing: ";
-    }
+	public void pause() {
+		isPaused = true;
+	}
 
-    // Method to jump over a specific part 
-    // Used in conjunction with slider
-    public void jump(long c) throws UnsupportedAudioFileException, IOException,
-            LineUnavailableException {
+	public void resume() {
+		isPaused = false;
+	}
 
-        if (c > 0 && c < clip.getMicrosecondLength()) {
-            clip.stop();
-            clip.close();
-            resetAudioStream();
-            currentFrame = c;
-            clip.setMicrosecondPosition(c);
-            this.play();
-        }
-    }
-
-    // Method to reset audio stream 
-    public void resetAudioStream() throws UnsupportedAudioFileException, IOException,
-            LineUnavailableException {
-
-        audioInputStream = AudioSystem.getAudioInputStream(
-                new File(filePath).getAbsoluteFile());
-        clip.open(audioInputStream);
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
-    }
-    
-    
-    public Long getCurrentFrame() {
-        return currentFrame;
-    }
-
-    public Long getFrameCount() {
-        return frameCount;
-    }
-
-    public double getDuration() {
-        return duration;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public String getNowPlaying() {
-        return nowPlaying;
-    }
-
-    public static String getFilePath() {
-        return filePath;
-    }
+	/**
+	 * Listens to the audio line events to know when the playback completes.
+	 */
+	@Override
+	public void update(LineEvent event) {
+		LineEvent.Type type = event.getType();
+		if (type == LineEvent.Type.STOP) {
+			System.out.println("STOP EVENT");
+			if (isStopped || !isPaused) {
+				playCompleted = true;
+			}
+		}
+	}
+	
+	public Clip getAudioClip() {
+		return audioClip;
+	}	
 
 }

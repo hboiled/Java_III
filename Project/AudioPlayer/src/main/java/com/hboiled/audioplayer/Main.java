@@ -13,11 +13,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
+import javax.swing.JSlider;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.io.FilenameUtils;
@@ -34,21 +37,22 @@ public class Main extends javax.swing.JFrame {
     private boolean signedIn;
     private SignInService service;
     private Playlist defaultPlaylist;
-    
+
     private final DefaultListModel<Playlist> playlistModel;
     // songModel is a placeholder for playlists
     private final DefaultListModel<String> songModel;
-    
+
     /**
      * Creates new form Main
      */
     public Main() {
+        player = new AudioPlayer();
         defaultPlaylist = new Playlist(("default"));
         playlistModel = new DefaultListModel<>();
         songModel = new DefaultListModel<>();
         initComponents();
         service = new SignInService();
-        
+
     }
 
     /**
@@ -91,11 +95,11 @@ public class Main extends javax.swing.JFrame {
         restartBtn7 = new javax.swing.JButton();
         searchLbl = new java.awt.Label();
         nowPlaying = new java.awt.Label();
-        timeStampLbl = new java.awt.Label();
         saveBtn = new javax.swing.JButton();
         createLbl = new java.awt.Label();
         playlistField = new javax.swing.JTextField();
         signedInLbl = new java.awt.Label();
+        timeStampLbl = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Audio Player");
@@ -189,20 +193,20 @@ public class Main extends javax.swing.JFrame {
 
         nowPlaying.setText("Now Playing: ");
 
-        timeStampLbl.setText("00:00 / 00:00");
-
         saveBtn.setText("Save");
 
         createLbl.setText("Create Playlist:");
 
         signedInLbl.setText("Welcome");
 
+        timeStampLbl.setText("00:00");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
+                .addContainerGap(20, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -230,10 +234,9 @@ public class Main extends javax.swing.JFrame {
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(regoBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(playbackSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(timeStampLbl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(startBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -266,7 +269,8 @@ public class Main extends javax.swing.JFrame {
                                                 .addComponent(searchPlaylistsBtn))
                                             .addComponent(searchLbl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(restartBtn7)))
+                                        .addComponent(restartBtn7))
+                                    .addComponent(timeStampLbl))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -302,9 +306,9 @@ public class Main extends javax.swing.JFrame {
                                 .addComponent(nowPlaying, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(playbackSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(timeStampLbl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(2, 2, 2)
+                                .addGap(7, 7, 7)
+                                .addComponent(timeStampLbl)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(startBtn)
                                     .addComponent(pauseBtn)
@@ -355,33 +359,54 @@ public class Main extends javax.swing.JFrame {
 
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = loadFileChooser.getSelectedFile();
-            try {
-                //songModel.addElement(selectedFile.getAbsolutePath());
-                defaultPlaylist.add(selectedFile.getAbsolutePath());
-                insertValuesIntoSongModel();
-                player = new AudioPlayer(selectedFile.getAbsolutePath());
-                player.play();
-                playbackSlider.setValue(0);
-                timeStampLbl.setText(String.format("0:00 / 0%.2f", player.getDuration()));
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
-                ex.printStackTrace();
-            }
+            songModel.addElement(selectedFile.getAbsolutePath());
+            defaultPlaylist.add(selectedFile.getAbsolutePath());
+            insertValuesIntoSongModel();
+            Timer timer = new Timer(timeStampLbl, playbackSlider);
+            timer.start();
+            // true bool
+            Thread playbackThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        player.load(selectedFile.getAbsolutePath());
+                        System.out.println("I am ok");
+                        timer.setAudioClip(player.getAudioClip());
+                        playbackSlider.setMaximum((int) player.getClipSecondLength());
+                        try {
+                            player.play();
+                        } catch (IOException ex) {
+                            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+            playbackThread.start();
+            
+            //startPlaying();
             // work with csv files only
             if (FilenameUtils.getExtension(selectedFile.getName()).equals("csv")) {
                 //fileModel.addElement(selectedFile);
-            } 
+            }
         }
     }//GEN-LAST:event_addSongBtnActionPerformed
 
-    private void signInBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInBtnActionPerformed
+    private void startPlaying() throws IOException {
+        player.play();
         
+    }
+
+    private void signInBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInBtnActionPerformed
+
         if (!fieldsEmpty()) {
-            
+
             String username = usernameField.getText();
-            
-            boolean outcome = service.attemptLogin(username, 
+
+            boolean outcome = service.attemptLogin(username,
                     new String(passwordField.getPassword()));
-            
+
             if (outcome) {
                 // extract to enable method
                 newPlaylistBtn.setEnabled(true);
@@ -390,22 +415,22 @@ public class Main extends javax.swing.JFrame {
                 deletePlaylistBtn.setEnabled(true);
                 signedInLbl.setText(username + "'s");
             }
-            
+
             System.out.println(outcome ? "Signed in" : "Failed");
         }
-        
+
         clearFields();
     }//GEN-LAST:event_signInBtnActionPerformed
 
     private void regoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regoBtnActionPerformed
-        
+
         if (!fieldsEmpty()) {
-            boolean outcome = service.attemptRegister(usernameField.getText(), 
+            boolean outcome = service.attemptRegister(usernameField.getText(),
                     new String(passwordField.getPassword()));
-            
+
             System.out.println(outcome ? "Registered" : "Failed");
         }
-        
+
         clearFields();
     }//GEN-LAST:event_regoBtnActionPerformed
 
@@ -414,23 +439,23 @@ public class Main extends javax.swing.JFrame {
             // check for dupes
             playlistModel.addElement(new Playlist(playlistField.getText()));
         }
-        
+
     }//GEN-LAST:event_newPlaylistBtnActionPerformed
 
     // Sort functionality, to be refactored
     private void sortPlaylistsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortPlaylistsBtnActionPerformed
         // extract sort method
         List<Playlist> tempList = new ArrayList<>();
-        
+
         for (int i = 0; i < playlistModel.size(); i++) {
             tempList.add(playlistModel.get(i));
         }
-        
+
         Collections.sort(tempList);
         playlistModel.removeAllElements();
-        
+
         playlistModel.addAll(tempList);
-        
+
     }//GEN-LAST:event_sortPlaylistsBtnActionPerformed
 
     private void searchPlaylistsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchPlaylistsBtnActionPerformed
@@ -446,13 +471,13 @@ public class Main extends javax.swing.JFrame {
         if (target >= 0) {
             playlists.setSelectedIndex(target);
         }
-        
+
     }//GEN-LAST:event_searchPlaylistsBtnActionPerformed
 
     private void deletePlaylistBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePlaylistBtnActionPerformed
         // TODO clear song list 
         int target = playlists.getSelectedIndex();
-        
+
         if (target >= 0) {
             playlistModel.remove(target);
         }
@@ -460,24 +485,24 @@ public class Main extends javax.swing.JFrame {
 
     private void insertValuesIntoSongModel() {
         songModel.removeAllElements();
-        
+
         // replace with current playlist
         List<String> songs = defaultPlaylist.getPlaylist().addToList();
-        
+
         for (String song : songs) {
             songModel.addElement(song);
         }
     }
-    
+
     private boolean fieldsEmpty() {
         return usernameField.getText().isBlank() || passwordField.getPassword().length == 0;
     }
-    
+
     private void clearFields() {
         usernameField.setText("");
         passwordField.setText("");
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -545,10 +570,9 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton sortPlaylistsBtn;
     private javax.swing.JButton startBtn;
     private javax.swing.JButton stopBtn;
-    private java.awt.Label timeStampLbl;
+    private javax.swing.JLabel timeStampLbl;
     private java.awt.Label title;
     private javax.swing.JTextField usernameField;
     // End of variables declaration//GEN-END:variables
 
-    
 }
