@@ -21,6 +21,10 @@ public class BTree {
         return root;
     }
     
+    public List<String> getHelperList() {
+        return helperList;
+    }
+    
     public BTree() {
         root = null;
     }

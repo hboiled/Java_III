@@ -21,8 +21,8 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
- *
- * @author 61406
+ * AudioPlayer adapted from: https://www.codejava.net/coding/java-audio-player-sample-application-in-swing 
+ * 
  */
 public class AudioPlayer implements LineListener {
 

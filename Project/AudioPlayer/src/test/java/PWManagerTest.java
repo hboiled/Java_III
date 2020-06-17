@@ -1,7 +1,9 @@
 
+import SortSearch.Searcher;
 import com.hboiled.audioplayer.Security.HashGen;
 import com.hboiled.audioplayer.Security.PWManager;
 import com.hboiled.audioplayer.Security.SaltGen;
+import javax.swing.DefaultListModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,14 +29,18 @@ public class PWManagerTest {
     
     @Test
     public void securePW_SameSaltAndPWShouldReturnSameValue() {
+        // bsearch test
+        DefaultListModel<String> songs = new DefaultListModel<String>();
+        songs.add(0, "a");
+        songs.add(1, "b");
+        songs.add(2, "c");
+        songs.add(3, "d");
+        songs.add(4, "e");
         
-        String password = "test";
-        byte[] salt = PWM.getSalt();
+        int expected = Searcher.bSearch(songs, "a");
+        int actual = 0;
         
-        String SPW = PWM.SecurePW(password, salt);
-        
-        Assertions.assertEquals(1,1);
-        
+        Assertions.assertEquals(actual, expected);
     }
     
 }
