@@ -5,7 +5,6 @@
  */
 package com.hboiled.audioplayer;
 
-import java.awt.Label;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,7 +19,7 @@ import javax.swing.JSlider;
  */
 public class Timer extends Thread {
 
-    private DateFormat dateFormater = new SimpleDateFormat("HH:mm:ss");
+    private DateFormat dateFormater = new SimpleDateFormat("mm:ss");
     private boolean isRunning = false;
     private boolean isPause = false;
     private boolean isReset = false;
@@ -61,7 +60,7 @@ public class Timer extends Thread {
                 ex.printStackTrace();
                 if (isReset) {
                     slider.setValue(0);
-                    labelRecordTime.setText("00:00:00");
+                    labelRecordTime.setText("00:00");
                     isRunning = false;
                     break;
                 }
@@ -70,7 +69,7 @@ public class Timer extends Thread {
     }
 
     /**
-     * Reset counting to "00:00:00"
+     * Reset counting to "00:00"
      */
     void reset() {
         isReset = true;
@@ -85,8 +84,16 @@ public class Timer extends Thread {
         isPause = false;
     }
 
+    
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public boolean isPause() {
+        return isPause;
+    }
     /**
-     * Generate a String for time counter in the format of "HH:mm:ss"
+     * Generate a String for time counter in the format of "mm:ss"
      *
      * @return the time counter
      */
