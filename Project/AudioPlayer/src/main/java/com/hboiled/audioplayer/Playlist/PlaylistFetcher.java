@@ -5,14 +5,17 @@
  */
 package com.hboiled.audioplayer.Playlist;
 
+import com.opencsv.CSVParser;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.RFC4180Parser;
+import com.opencsv.RFC4180ParserBuilder;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import org.apache.commons.io.FilenameUtils;
 
@@ -39,10 +42,12 @@ public class PlaylistFetcher {
     }
 
     private static Playlist readFile(File file) {
+        // have to use deprecated API to read full path because opencsv default ctor ignores backslashes
+        CSVParser parser = new CSVParser(CSVParser.DEFAULT_SEPARATOR, CSVParser.DEFAULT_QUOTE_CHARACTER, '\0', CSVParser.DEFAULT_STRICT_QUOTES);
         Playlist newPlaylist = new Playlist(FilenameUtils.
                 getBaseName(file.getAbsolutePath()));
 
-        try (CSVReader reader = new CSVReader(new FileReader(file))) {
+        try (CSVReader reader = new CSVReader(new FileReader(file), 0, parser)) {
 
             // use Reader to read all values into a list
             List<String[]> data = reader.readAll();

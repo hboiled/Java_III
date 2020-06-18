@@ -144,10 +144,8 @@
                           <Component id="regoBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                      <Component id="signedInLbl" min="-2" max="-2" attributes="0"/>
-                      <Component id="title" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="title" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="signedInLbl" alignment="1" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
@@ -286,6 +284,7 @@
         <Component class="javax.swing.JList" name="playlists">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JList(playlistModel)"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="playlists.addListSelectionListener(new ListSelectionListener() {&#xd;&#xa;&#xd;&#xa;    @Override&#xd;&#xa;    public void valueChanged(ListSelectionEvent e) {&#xd;&#xa;        int target = playlists.getSelectedIndex();&#xd;&#xa;        if (target &gt;= 0) {&#xd;&#xa;            selPlaylist = playlistModel.elementAt(target);&#xd;&#xa;            insertValuesIntoSongModel();&#xd;&#xa;        }     &#xd;&#xa;    }&#xd;&#xa;});&#xd;&#xa;"/>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
         </Component>
@@ -301,6 +300,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="startBtn">
       <Properties>
+        <Property name="enabled" type="boolean" value="false"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[33, 9]"/>
         </Property>
@@ -311,6 +311,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="pauseBtn">
       <Properties>
+        <Property name="enabled" type="boolean" value="false"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[33, 9]"/>
         </Property>
@@ -321,6 +322,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="stopBtn">
       <Properties>
+        <Property name="enabled" type="boolean" value="false"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[33, 9]"/>
         </Property>
@@ -343,6 +345,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="resumeBtn">
       <Properties>
+        <Property name="enabled" type="boolean" value="false"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[33, 9]"/>
         </Property>
@@ -353,6 +356,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="nextBtn">
       <Properties>
+        <Property name="enabled" type="boolean" value="false"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[33, 9]"/>
         </Property>
@@ -363,6 +367,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="previousBtn">
       <Properties>
+        <Property name="enabled" type="boolean" value="false"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[33, 9]"/>
         </Property>
@@ -410,6 +415,7 @@
     <Component class="javax.swing.JButton" name="addSongBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Add Song"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addSongBtnActionPerformed"/>
@@ -420,6 +426,7 @@
     <Component class="javax.swing.JButton" name="searchSongsBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Search Songs"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="java.awt.Label" name="searchLbl">
@@ -435,7 +442,11 @@
     <Component class="javax.swing.JButton" name="saveBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Save"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveBtnActionPerformed"/>
+      </Events>
     </Component>
     <Component class="java.awt.Label" name="createLbl">
       <Properties>

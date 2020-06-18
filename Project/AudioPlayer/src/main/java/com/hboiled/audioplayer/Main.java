@@ -9,6 +9,7 @@ import SortSearch.Searcher;
 import com.hboiled.audioplayer.Playlist.CellDisplay;
 import com.hboiled.audioplayer.Playlist.Node;
 import com.hboiled.audioplayer.Playlist.Playlist;
+import com.hboiled.audioplayer.Playlist.PlaylistFetcher;
 import com.hboiled.audioplayer.Security.SignInService;
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +24,10 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JSlider;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.io.FilenameUtils;
@@ -38,9 +42,9 @@ public class Main extends javax.swing.JFrame {
     private String loadedSong;
     private final static String DEFAULTPATH = System.getProperty("user.dir") + "\\sampleSongs";
     // If user is not signed in, disable playlist functionality buttons
-    private boolean signedIn;
+    private String userSignedIn;
     private SignInService service;
-    private Playlist defaultPlaylist;
+    private Playlist selPlaylist;
 
     private final DefaultListModel<Playlist> playlistModel;
     // songModel is a placeholder for playlists
@@ -54,7 +58,6 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         player = new AudioPlayer();
-        defaultPlaylist = new Playlist(("default"));
         playlistModel = new DefaultListModel<>();
         songModel = new DefaultListModel<>();
         initComponents();
@@ -84,6 +87,17 @@ public class Main extends javax.swing.JFrame {
         songsList = new JList(songModel);
         jScrollPane2 = new javax.swing.JScrollPane();
         playlists = new JList(playlistModel);
+        playlists.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int target = playlists.getSelectedIndex();
+                if (target >= 0) {
+                    selPlaylist = playlistModel.elementAt(target);
+                    insertValuesIntoSongModel();
+                }     
+            }
+        });
         title = new java.awt.Label();
         startBtn = new javax.swing.JButton();
         pauseBtn = new javax.swing.JButton();
@@ -140,6 +154,7 @@ public class Main extends javax.swing.JFrame {
         title.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         title.setText("JMC Audio Player");
 
+        startBtn.setEnabled(false);
         startBtn.setMaximumSize(new java.awt.Dimension(33, 9));
         startBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -147,6 +162,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        pauseBtn.setEnabled(false);
         pauseBtn.setMaximumSize(new java.awt.Dimension(33, 9));
         pauseBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -154,6 +170,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        stopBtn.setEnabled(false);
         stopBtn.setMaximumSize(new java.awt.Dimension(33, 9));
         stopBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -165,6 +182,7 @@ public class Main extends javax.swing.JFrame {
 
         playlistLbl.setText("Playlists:");
 
+        resumeBtn.setEnabled(false);
         resumeBtn.setMaximumSize(new java.awt.Dimension(33, 9));
         resumeBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -172,6 +190,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        nextBtn.setEnabled(false);
         nextBtn.setMaximumSize(new java.awt.Dimension(33, 9));
         nextBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -179,6 +198,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        previousBtn.setEnabled(false);
         previousBtn.setMaximumSize(new java.awt.Dimension(33, 9));
         previousBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -219,6 +239,7 @@ public class Main extends javax.swing.JFrame {
         });
 
         addSongBtn.setText("Add Song");
+        addSongBtn.setEnabled(false);
         addSongBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addSongBtnActionPerformed(evt);
@@ -226,12 +247,19 @@ public class Main extends javax.swing.JFrame {
         });
 
         searchSongsBtn.setText("Search Songs");
+        searchSongsBtn.setEnabled(false);
 
         searchLbl.setText("Search:");
 
         nowPlaying.setText("Now Playing: ");
 
         saveBtn.setText("Save");
+        saveBtn.setEnabled(false);
+        saveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBtnActionPerformed(evt);
+            }
+        });
 
         createLbl.setText("Create Playlist:");
 
@@ -327,9 +355,8 @@ public class Main extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(signInBtn)
                             .addComponent(regoBtn)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(signedInLbl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(signedInLbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(5, 5, 5)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
@@ -395,7 +422,7 @@ public class Main extends javax.swing.JFrame {
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = loadFileChooser.getSelectedFile();
 
-            defaultPlaylist.add(selectedFile.getAbsolutePath());
+            selPlaylist.add(selectedFile.getAbsolutePath());
             insertValuesIntoSongModel();
 
             loadedSong = selectedFile.getAbsolutePath();
@@ -414,14 +441,13 @@ public class Main extends javax.swing.JFrame {
             @Override
             public void run() {
                 try {
-
                     player.load(current.getAbsolutePath());
                     timer.setAudioClip(player.getAudioClip());
                     playbackSlider.setMaximum((int) player.getClipSecondLength());
                     player.play();
 
                 } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
                 }
             }
         });
@@ -439,13 +465,13 @@ public class Main extends javax.swing.JFrame {
                     new String(passwordField.getPassword()));
 
             if (outcome) {
+                playlistModel.clear();
+                songModel.clear();
                 enablePlaylist(username);
-
+                userSignedIn = username;
+                PlaylistFetcher.FindPlaylists(playlistModel, username);
             }
-            // error msg?
-            System.out.println(outcome ? "Signed in" : "Failed");
         }
-
         clearFields();
     }//GEN-LAST:event_signInBtnActionPerformed
 
@@ -465,10 +491,23 @@ public class Main extends javax.swing.JFrame {
     private void newPlaylistBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPlaylistBtnActionPerformed
         if (!playlistField.getText().isBlank()) {
             // check for dupes
-            playlistModel.addElement(new Playlist(playlistField.getText()));
+            String name = playlistField.getText();
+            if (playlistExists(name)) {
+                JOptionPane.showMessageDialog(this, "Playlist already exists");
+            } else {
+                playlistModel.addElement(new Playlist(name));
+            }
         }
-
     }//GEN-LAST:event_newPlaylistBtnActionPerformed
+
+    private boolean playlistExists(String name) {
+        for (int i = 0; i < playlistModel.size(); i++) {
+            if (playlistModel.get(i).toString().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     // Sort functionality, to be refactored
     private void sortPlaylistsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortPlaylistsBtnActionPerformed
@@ -522,7 +561,7 @@ public class Main extends javax.swing.JFrame {
     private void nextBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextBtnActionPerformed
         int nextSongIndex = Searcher.bSearch(songModel, loadedSong) + 1;
         if (nextSongIndex < songModel.size()) {
-            loadedSong = defaultPlaylist.getPlaylist().find(songModel.get(nextSongIndex)).getValue();
+            loadedSong = selPlaylist.getPlaylist().find(songModel.get(nextSongIndex)).getValue();
             nowPlaying.setText(loadedSong);
         }
     }//GEN-LAST:event_nextBtnActionPerformed
@@ -530,13 +569,12 @@ public class Main extends javax.swing.JFrame {
     private void previousBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousBtnActionPerformed
         int prevSongIndex = Searcher.bSearch(songModel, loadedSong) - 1;
         if (prevSongIndex >= 0) {
-            loadedSong = defaultPlaylist.getPlaylist().find(songModel.get(prevSongIndex)).getValue();
+            loadedSong = selPlaylist.getPlaylist().find(songModel.get(prevSongIndex)).getValue();
             nowPlaying.setText(loadedSong);
         }
     }//GEN-LAST:event_previousBtnActionPerformed
 
     private void stopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopBtnActionPerformed
-        // check if set
 
         if (timer != null && timer.isRunning()) {
             player.stop();
@@ -563,23 +601,20 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_resumeBtnActionPerformed
 
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+        PlaylistFetcher.SaveFiles(userSignedIn, playlistModel);
+    }//GEN-LAST:event_saveBtnActionPerformed
+
     private void insertValuesIntoSongModel() {
         songModel.removeAllElements();
 
         // replace with current playlist
-        List<String> songs = defaultPlaylist.getPlaylist().addToList();
+        List<String> songs = selPlaylist.getPlaylist().addToList();
 
         for (String song : songs) {
-            songModel.addElement(song);
+            System.out.println(song);
+            songModel.addElement(FilenameUtils.getBaseName(song));
         }
-    }
-
-    private void enablePlaylist(String username) {
-        newPlaylistBtn.setEnabled(true);
-        sortPlaylistsBtn.setEnabled(true);
-        searchPlaylistsBtn.setEnabled(true);
-        deletePlaylistBtn.setEnabled(true);
-        signedInLbl.setText(username + "'s");
     }
 
     private boolean fieldsEmpty() {
@@ -607,15 +642,11 @@ public class Main extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+
         //</editor-fold>
 
         /* Create and display the form */
@@ -675,8 +706,25 @@ public class Main extends javax.swing.JFrame {
         pauseBtn.setIcon(iconPause);
         stopBtn.setIcon(iconStop);
         nextBtn.setIcon(iconNext);
-        previousBtn.setIcon(iconPrev);        
+        previousBtn.setIcon(iconPrev);
         resumeBtn.setIcon(iconResume);
+    }
+
+    private void enablePlaylist(String username) {
+        newPlaylistBtn.setEnabled(true);
+        sortPlaylistsBtn.setEnabled(true);
+        searchPlaylistsBtn.setEnabled(true);
+        deletePlaylistBtn.setEnabled(true);
+        saveBtn.setEnabled(true);
+        addSongBtn.setEnabled(true);
+        startBtn.setEnabled(true);
+        pauseBtn.setEnabled(true);
+        stopBtn.setEnabled(true);
+        nextBtn.setEnabled(true);
+        previousBtn.setEnabled(true);
+        resumeBtn.setEnabled(true);
+        searchSongsBtn.setEnabled(true);
+        signedInLbl.setText("Signed in as: " + username);
     }
 
 }
