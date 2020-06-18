@@ -6,6 +6,7 @@
 package com.hboiled.audioplayer;
 
 import SortSearch.Searcher;
+import SortSearch.Sorter;
 import com.hboiled.audioplayer.Playlist.CellDisplay;
 import com.hboiled.audioplayer.Playlist.Node;
 import com.hboiled.audioplayer.Playlist.Playlist;
@@ -95,6 +96,9 @@ public class Main extends javax.swing.JFrame {
                 if (target >= 0) {
                     selPlaylist = playlistModel.elementAt(target);
                     insertValuesIntoSongModel();
+                    if (songModel.size() > 0) {
+                        loadedSong = selPlaylist.getPlaylist().getHelperList().get(0);
+                    }
                 }     
             }
         });
@@ -248,6 +252,11 @@ public class Main extends javax.swing.JFrame {
 
         searchSongsBtn.setText("Search Songs");
         searchSongsBtn.setEnabled(false);
+        searchSongsBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchSongsBtnActionPerformed(evt);
+            }
+        });
 
         searchLbl.setText("Search:");
 
@@ -442,6 +451,7 @@ public class Main extends javax.swing.JFrame {
             public void run() {
                 try {
                     player.load(current.getAbsolutePath());
+                    nowPlaying.setText(current.getName());
                     timer.setAudioClip(player.getAudioClip());
                     playbackSlider.setMaximum((int) player.getClipSecondLength());
                     player.play();
@@ -500,15 +510,6 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_newPlaylistBtnActionPerformed
 
-    private boolean playlistExists(String name) {
-        for (int i = 0; i < playlistModel.size(); i++) {
-            if (playlistModel.get(i).toString().equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     // Sort functionality, to be refactored
     private void sortPlaylistsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortPlaylistsBtnActionPerformed
         // extract sort method
@@ -518,7 +519,7 @@ public class Main extends javax.swing.JFrame {
             tempList.add(playlistModel.get(i));
         }
 
-        Collections.sort(tempList);
+        Sorter.sort(tempList);
         playlistModel.removeAllElements();
 
         playlistModel.addAll(tempList);
@@ -538,7 +539,6 @@ public class Main extends javax.swing.JFrame {
         if (target >= 0) {
             playlists.setSelectedIndex(target);
         }
-
     }//GEN-LAST:event_searchPlaylistsBtnActionPerformed
 
     private void deletePlaylistBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePlaylistBtnActionPerformed
@@ -561,28 +561,38 @@ public class Main extends javax.swing.JFrame {
     private void nextBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextBtnActionPerformed
         int nextSongIndex = Searcher.bSearch(songModel, loadedSong) + 1;
         if (nextSongIndex < songModel.size()) {
+            stopPlaying();
             loadedSong = selPlaylist.getPlaylist().find(songModel.get(nextSongIndex)).getValue();
-            nowPlaying.setText(loadedSong);
+            try {
+                startPlaying(new File(loadedSong));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            songsList.setSelectedIndex(nextSongIndex);
+            nowPlaying.setText(FilenameUtils.getBaseName(loadedSong));
         }
     }//GEN-LAST:event_nextBtnActionPerformed
 
     private void previousBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousBtnActionPerformed
         int prevSongIndex = Searcher.bSearch(songModel, loadedSong) - 1;
         if (prevSongIndex >= 0) {
+            stopPlaying();
             loadedSong = selPlaylist.getPlaylist().find(songModel.get(prevSongIndex)).getValue();
-            nowPlaying.setText(loadedSong);
+            try {
+                startPlaying(new File(loadedSong));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            songsList.setSelectedIndex(prevSongIndex);
+            nowPlaying.setText(FilenameUtils.getBaseName(loadedSong));
         }
     }//GEN-LAST:event_previousBtnActionPerformed
 
     private void stopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopBtnActionPerformed
 
         if (timer != null && timer.isRunning()) {
-            player.stop();
-            timer.reset();
-            timer.interrupt();
-            playbackThread.interrupt();
+            stopPlaying();
         }
-
     }//GEN-LAST:event_stopBtnActionPerformed
 
     private void pauseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseBtnActionPerformed
@@ -605,6 +615,21 @@ public class Main extends javax.swing.JFrame {
         PlaylistFetcher.SaveFiles(userSignedIn, playlistModel);
     }//GEN-LAST:event_saveBtnActionPerformed
 
+    private void searchSongsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchSongsBtnActionPerformed
+        String subject = searchField.getText();
+        int target = -1;
+        // set selected playlist entry
+        for (int i = 0; i < songModel.size(); i++) {
+            if (FilenameUtils.getBaseName(songModel.get(i)).equals(subject)) {
+                target = i;
+            }
+        }
+        if (target >= 0) {
+            songsList.setSelectedIndex(target);
+            loadedSong = songModel.get(target);
+        }
+    }//GEN-LAST:event_searchSongsBtnActionPerformed
+
     private void insertValuesIntoSongModel() {
         songModel.removeAllElements();
 
@@ -612,9 +637,17 @@ public class Main extends javax.swing.JFrame {
         List<String> songs = selPlaylist.getPlaylist().addToList();
 
         for (String song : songs) {
-            System.out.println(song);
-            songModel.addElement(FilenameUtils.getBaseName(song));
+            songModel.addElement(song);
         }
+    }
+
+    private boolean playlistExists(String name) {
+        for (int i = 0; i < playlistModel.size(); i++) {
+            if (playlistModel.get(i).toString().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean fieldsEmpty() {
@@ -725,6 +758,13 @@ public class Main extends javax.swing.JFrame {
         resumeBtn.setEnabled(true);
         searchSongsBtn.setEnabled(true);
         signedInLbl.setText("Signed in as: " + username);
+    }
+
+    private void stopPlaying() {
+        player.stop();
+        timer.reset();
+        timer.interrupt();
+        playbackThread.interrupt();
     }
 
 }

@@ -284,7 +284,7 @@
         <Component class="javax.swing.JList" name="playlists">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JList(playlistModel)"/>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="playlists.addListSelectionListener(new ListSelectionListener() {&#xd;&#xa;&#xd;&#xa;    @Override&#xd;&#xa;    public void valueChanged(ListSelectionEvent e) {&#xd;&#xa;        int target = playlists.getSelectedIndex();&#xd;&#xa;        if (target &gt;= 0) {&#xd;&#xa;            selPlaylist = playlistModel.elementAt(target);&#xd;&#xa;            insertValuesIntoSongModel();&#xd;&#xa;        }     &#xd;&#xa;    }&#xd;&#xa;});&#xd;&#xa;"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="playlists.addListSelectionListener(new ListSelectionListener() {&#xd;&#xa;&#xd;&#xa;    @Override&#xd;&#xa;    public void valueChanged(ListSelectionEvent e) {&#xd;&#xa;        int target = playlists.getSelectedIndex();&#xd;&#xa;        if (target &gt;= 0) {&#xd;&#xa;            selPlaylist = playlistModel.elementAt(target);&#xd;&#xa;            insertValuesIntoSongModel();&#xd;&#xa;                if (songModel.size() &gt; 0) {&#xd;&#xa;                    loadedSong = selPlaylist.getPlaylist().getHelperList().get(0);&#xd;&#xa;                }&#xd;&#xa;        }     &#xd;&#xa;    }&#xd;&#xa;});&#xd;&#xa;"/>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
         </Component>
@@ -428,6 +428,9 @@
         <Property name="text" type="java.lang.String" value="Search Songs"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchSongsBtnActionPerformed"/>
+      </Events>
     </Component>
     <Component class="java.awt.Label" name="searchLbl">
       <Properties>
