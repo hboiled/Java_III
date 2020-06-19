@@ -495,9 +495,10 @@ public class Main extends javax.swing.JFrame {
 
             if (!outcome) {
                 JOptionPane.showMessageDialog(this, "Failed to register");
+            } else {
+                JOptionPane.showMessageDialog(this, "Successfully registered");
             }
         }
-
         clearFields();
     }//GEN-LAST:event_regoBtnActionPerformed
 

@@ -7,14 +7,10 @@ package com.hboiled.audioplayer.Playlist;
 
 import com.opencsv.CSVParser;
 import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.RFC4180Parser;
-import com.opencsv.RFC4180ParserBuilder;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import org.apache.commons.io.FilenameUtils;

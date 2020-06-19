@@ -2,12 +2,8 @@ package SortSearchTests;
 
 
 import SortSearch.Searcher;
-import com.hboiled.audioplayer.Security.HashGen;
-import com.hboiled.audioplayer.Security.PWManager;
-import com.hboiled.audioplayer.Security.SaltGen;
 import javax.swing.DefaultListModel;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /*
