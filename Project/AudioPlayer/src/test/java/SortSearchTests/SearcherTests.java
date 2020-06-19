@@ -1,3 +1,5 @@
+package SortSearchTests;
+
 
 import SortSearch.Searcher;
 import com.hboiled.audioplayer.Security.HashGen;
@@ -18,18 +20,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author 61406
  */
-public class PWManagerTest {
-    private PWManager PWM;
-    
-    
-    @BeforeEach
-    public void init() {
-        PWM = new PWManager(new HashGen(), new SaltGen());
-    }
+public class SearcherTests {    
     
     @Test
-    public void securePW_SameSaltAndPWShouldReturnSameValue() {
-        // bsearch test
+    public void bSearch_ShouldWorkOnSortedListModel() {
+        // bsearch tests
         DefaultListModel<String> songs = new DefaultListModel<String>();
         songs.add(0, "a");
         songs.add(1, "b");

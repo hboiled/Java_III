@@ -15,7 +15,7 @@ import javax.swing.JSlider;
 
 /**
  *
- * @author 61406
+ * Timer adapted from: https://www.codejava.net/coding/java-audio-player-sample-application-in-swing 
  */
 public class Timer extends Thread {
 

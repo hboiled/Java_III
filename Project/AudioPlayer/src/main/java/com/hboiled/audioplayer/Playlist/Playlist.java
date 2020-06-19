@@ -5,8 +5,6 @@
  */
 package com.hboiled.audioplayer.Playlist;
 
-import java.util.Collections;
-
 /**
  *
  * @author 61406

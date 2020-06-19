@@ -64,6 +64,7 @@ public class Main extends javax.swing.JFrame {
         initComponents();
         setButtons();
         service = new SignInService();
+        service.insertUsers();
 
     }
 
@@ -492,7 +493,9 @@ public class Main extends javax.swing.JFrame {
             boolean outcome = service.attemptRegister(usernameField.getText(),
                     new String(passwordField.getPassword()));
 
-            System.out.println(outcome ? "Registered" : "Failed");
+            if (!outcome) {
+                JOptionPane.showMessageDialog(this, "Failed to register");
+            }
         }
 
         clearFields();

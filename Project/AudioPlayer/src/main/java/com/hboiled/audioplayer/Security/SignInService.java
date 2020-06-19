@@ -11,7 +11,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 /**
@@ -25,12 +24,7 @@ public class SignInService {
     private final File usersPath = new File("data/users.csv");
 
     public SignInService() {
-
-        insertUsers();        
-//        for (User u : users) {
-//            System.out.println(u);
-//        }
-        
+        // insertUsers();        
     }
 
     public boolean attemptLogin(String username, String password) {
@@ -122,6 +116,9 @@ public class SignInService {
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
-
+    }
+        
+    public List<User> getUsers() {
+        return users;
     }
 }
